@@ -26,6 +26,7 @@ body {
 .item {
     background-color: #f00;
     transition: background-color 0.2s ease-in;
+    animation: itemColor  1s alternate infinite ease-out;
 }
 
 .unit {
@@ -53,4 +54,10 @@ button {
     font-family: 'Press Start 2P', cursive;
     font-size: 10px;
     outline: none;
+}
+
+
+@keyframes itemColor {
+    from {background-color: #f00;}
+    to {background-color: #ff9900;}
 }
