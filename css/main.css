@@ -42,3 +42,15 @@ body {
     flex-direction: row;
     justify-content:flex-start;
 }
+
+button {
+    margin: 10px 10px 10px 0px;
+    padding: 7px;
+    background-color: rgb(28, 83, 97);
+    color: #fff;
+    border: none;
+    cursor: pointer;
+    font-family: 'Press Start 2P', cursive;
+    font-size: 10px;
+    outline: none;
+}
