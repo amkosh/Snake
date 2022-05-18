@@ -43,7 +43,6 @@ function controls(event){
     } else if (isPause == true) {
         move(event.key);
     }
-    
 }
 
 function initItems() {
@@ -86,7 +85,6 @@ function drawField(){
                 } else {
                     field[i][j].className = "field";
                 }
-                
             }
         }
         initUnit();
@@ -97,9 +95,7 @@ function drawField(){
 function colCheck(){
     //Проверка на стены
     if(x < 0 || x > 19 || y < 0 || y > 19) {
-        fail = true;
-        info.parentElement.innerHTML = 'GAME OVER!'
-        cancelAnimationFrame(rAF);
+        gameOver();
     } //Проверка на предмет
     else if(items[x][y]){
         addItem();
@@ -110,10 +106,19 @@ function colCheck(){
         lvlUp();
     } //Проверка на змею
     else if (field[x][y].className == "unit") {
-        fail = true;
-        info.parentElement.innerHTML = 'GAME OVER!'
-        cancelAnimationFrame(rAF);
+        gameOver();
     }
+}
+
+function gameOver() {
+    for(let i = 0; i < unitSize; i++){
+        let tmpX = unitCellX[i];
+        let tmpY = unitCellY[i];
+        field[tmpX][tmpY].className = "dead";
+    }
+    fail = true;
+    info.parentElement.innerHTML = 'GAME OVER!'
+    cancelAnimationFrame(rAF);
 }
 
 function unitGrowUp() {
@@ -135,7 +140,6 @@ function initUnit() {
         let tmpY = unitCellY[i];
         field[tmpX][tmpY].className = "unit";
     }
-    //field[x][y].style.background = "#00ff00";
 }
 
 function move(event){
@@ -188,7 +192,4 @@ function pause() {
         cancelAnimationFrame(rAF);
         button.innerText = 'RESUME';
     }
-    
 }
-
-//rAF = requestAnimationFrame(loop);

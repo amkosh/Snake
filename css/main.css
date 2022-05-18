@@ -44,6 +44,10 @@ body {
     justify-content:flex-start;
 }
 
+.dead {
+    background-color: rgb(110, 44, 0);
+}
+
 button {
     margin: 10px 10px 10px 0px;
     padding: 7px;
