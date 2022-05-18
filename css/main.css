@@ -3,6 +3,10 @@
     grid-template-columns:repeat(20, 20px);
 }
 
+header {
+    font-size: 25px;
+}
+
 #first div {
     width: 20px;
     height: 20px;
@@ -22,6 +26,7 @@ body {
     flex-direction: column;
     width: 200px;
     border: dashed rgb(28, 83, 97) 1px;
+    background-color: rgb(0, 14, 22);
 }
 
 
