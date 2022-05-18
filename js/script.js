@@ -1,29 +1,29 @@
-let first = document.getElementById("first");
-let info = document.getElementById("score");
-let infoLvl = document.getElementById('lvl');
-let field = [20];
-let items = [20];
-let score = 0;
-let x = 9;
-let y = 9;
-let unitCellX = [];
-let unitCellY = [];
-unitCellX.push(x);
-unitCellY.push(y);
-let unitSize = 1;
-let fail = false;
-let isPause = false;
+let first = document.getElementById("first");   //Сегмент, куда будет помещено игровое поле
+let info = document.getElementById("score");    //Для вывода очков
+let infoLvl = document.getElementById('lvl');   //Для вывода уровня
+let field = [20];   //Создаем массив для игрового поля (количество рядов)
+let items = [20];   //Создаем массив для предметов (той же величины, что и поле)
+let score = 0;  //Счетчик очков
+let x = 9;  //Начальная координата игрока
+let y = 9;  //Начальная координата игрока
+let unitCellX = []; //Хранилище координат X для отображения всей длины змеи
+let unitCellY = []; //Хранилище координат Y для отображения всей длины змеи
+unitCellX.push(x); //Добавляем первую ячейку в хранилище змеи
+unitCellY.push(y); //Добавляем первую ячейку в хранилище змеи
+let unitSize = 1;   //Счетчик длины змеи (для циклов)
+let fail = false;   //Gameover
+let isPause = false;    //Pause
 
-let direction = 'ArrowUp';
-let speed = 15;
-let level = 0;
+let direction = 'ArrowUp';  //Начальная ориентация змеи
+let speed = 15; //Число кадров перед обновлением
+let level = 0;  //Начальный уровень
 
 // следим за кадрами анимации, чтобы если что — остановить игру
-let rAF = null; 
+let rAF = null;
 //Счетчик кадров
 let count = 0;
 
-document.body.addEventListener("keydown", controls);
+document.body.addEventListener("keydown", controls); //Обработчик ввода
 
 //Заполнение массива поля
 for(let i = 0; i < 20; i++) {
@@ -35,9 +35,10 @@ for(let i = 0; i < 20; i++) {
     items[i] = [20];
 }
 
-initField();
-restart();
+initField();    //Заполнение поля div'ами
+restart();  //Старт
 
+//Обработчик ввода
 function controls(event){
     if(event.key == ' '){
         pause();
@@ -46,6 +47,7 @@ function controls(event){
     }
 }
 
+//Заполнение массива с предметами нулями
 function initItems() {
     for(let i = 0; i < 20; i++) {
         for(let j = 0; j < 20; j++){
@@ -54,6 +56,7 @@ function initItems() {
     }
 }
 
+//Добавление предмета на поле
 function addItem() {
     let a = getRandomInt(0, 19);
     let b = getRandomInt(0, 19);
@@ -65,6 +68,7 @@ function addItem() {
     drawField();
 }
 
+//Заполнение массива div'ами и их размещение на странице
 function initField(){
     let id = 0;
     for(let i = 0; i < 20; i++) {
@@ -77,6 +81,7 @@ function initField(){
     }
 }
 
+//Отрисовка текущего состояния поля
 function drawField(){
     if(fail == false){
         for(let i = 0; i < 20; i++) {
@@ -93,6 +98,7 @@ function drawField(){
     }
 }
 
+//Проверка столкновений
 function colCheck(){
     //Проверка на стены
     if(x < 0 || x > 19 || y < 0 || y > 19) {
@@ -101,7 +107,7 @@ function colCheck(){
     else if(items[x][y]){
         addItem();
         items[x][y] = 0;
-        score++;
+        score += 100;
         unitSize++;
         unitGrowUp();
         lvlUp();
@@ -111,6 +117,7 @@ function colCheck(){
     }
 }
 
+//Остановка игры при проигрыше
 function gameOver() {
     for(let i = 0; i < unitSize; i++){
         let tmpX = unitCellX[i];
@@ -122,6 +129,7 @@ function gameOver() {
     cancelAnimationFrame(rAF);
 }
 
+//Рестарт, сброс параметров на начальное значение
 function restart() {
     x = 9;
     y = 9;
@@ -145,13 +153,15 @@ function restart() {
     addItem();
 }
 
+//Рост змеи при поглощении предмета
 function unitGrowUp() {
     unitCellX.push(x);
     unitCellY.push(y);
 }
 
+//Повышение уровня сложности, проверка на победу
 function lvlUp() {
-    if(score % 10 == 0) {
+    if(score % 1000 == 0) {
         speed--;
         level++;
         infoLvl.innerText = level;
@@ -161,6 +171,7 @@ function lvlUp() {
     }
 }
 
+//Отрисовка змеи
 function initUnit() {
     for(let i = 0; i < unitSize; i++){
         let tmpX = unitCellX[i];
@@ -169,6 +180,7 @@ function initUnit() {
     }
 }
 
+//Передвижение змеи
 function move(event){
     if(fail == false){
         switch(event){
@@ -192,12 +204,14 @@ function move(event){
     }
 }
 
+//Рандомное целое число
 function getRandomInt(min, max) {
     min = Math.ceil(min);
     max = Math.floor(max);
     return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
+//Цикл анимации
 function loop() {
     // начинаем анимацию
     rAF = requestAnimationFrame(loop);
@@ -209,6 +223,7 @@ function loop() {
     }
 }
 
+//Пауза
 function pause() {
     let button = document.getElementById('pause');
     isPause = !isPause;
