@@ -1,0 +1,25 @@
+#first {
+    display: grid;
+    grid-template-columns:repeat(20, 20px);
+}
+
+#first div {
+    width: 20px;
+    height: 20px;
+    border: solid gray 1px;
+}
+
+body {
+    background: #000;
+    color: #fff;
+    display: flex;
+    justify-content: center;
+    flex-direction: row;
+    user-select: none;
+}
+
+#info {
+    padding: 15px;
+    display: flex;
+    flex-direction: row;
+}
