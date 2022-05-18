@@ -1,5 +1,6 @@
 let first = document.getElementById("first");
 let info = document.getElementById("score");
+let infoLvl = document.getElementById('lvl');
 let field = [20];
 let items = [20];
 let score = 0;
@@ -14,7 +15,8 @@ let fail = false;
 let isPause = false;
 
 let direction = 'ArrowUp';
-let speed = 10;
+let speed = 15;
+let level = 0;
 
 // следим за кадрами анимации, чтобы если что — остановить игру
 let rAF = null; 
@@ -36,7 +38,6 @@ addItem();
 document.body.addEventListener("keydown", controls);
 
 function controls(event){
-    console.log(event);
     if(event.key == ' '){
         pause();
     } else if (isPause == true) {
@@ -106,7 +107,7 @@ function colCheck(){
         score++;
         unitSize++;
         unitGrowUp();
-        
+        lvlUp();
     } //Проверка на змею
     else if (field[x][y].className == "unit") {
         fail = true;
@@ -118,6 +119,14 @@ function colCheck(){
 function unitGrowUp() {
     unitCellX.push(x);
     unitCellY.push(y);
+}
+
+function lvlUp() {
+    if(score % 10 == 0) {
+        speed--;
+        level++;
+        infoLvl.innerText = level;
+    }
 }
 
 function initUnit() {
