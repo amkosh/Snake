@@ -6,15 +6,12 @@
 #first div {
     width: 20px;
     height: 20px;
-    border: solid gray 1px;
+    border: dashed rgb(28, 83, 97) 1px;
 }
 
 body {
-    background: #000;
+    background: rgb(0, 23, 36);
     color: #fff;
-    display: flex;
-    justify-content: center;
-    flex-direction: column;
     user-select: none;
     font-family: 'Press Start 2P', cursive;
 }
@@ -38,4 +35,10 @@ body {
 .field {
     background-color: #000;
     transition: background-color 0.2s ease-in;
+}
+
+.play__field {
+    display: flex;
+    flex-direction: row;
+    justify-content:flex-start;
 }

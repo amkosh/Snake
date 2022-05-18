@@ -119,6 +119,7 @@ function move(event){
             break;
             case 'ArrowLeft': --y;
             break;
+            default: return;
         }
         colCheck();
         unitCellX.unshift(x);
