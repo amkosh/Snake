@@ -142,6 +142,7 @@ function restart() {
     document.getElementById("game_over").innerText = '';
     infoLvl.innerText = level;
     direction = 'ArrowUp';
+    rAF = null;
 
     unitCellX = [];
     unitCellY = [];
@@ -166,7 +167,7 @@ function lvlUp() {
         level++;
         infoLvl.innerText = level;
     }
-    if(unitSize == 400){
+    if(unitSize == 100){
         document.getElementById("game_over").innerText = 'YOU WON!!!';
     }
 }
