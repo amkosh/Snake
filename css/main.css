@@ -14,12 +14,28 @@ body {
     color: #fff;
     display: flex;
     justify-content: center;
-    flex-direction: row;
+    flex-direction: column;
     user-select: none;
+    font-family: 'Press Start 2P', cursive;
 }
 
 #info {
     padding: 15px;
     display: flex;
     flex-direction: row;
+}
+
+
+.item {
+    background-color: #f00;
+    transition: background-color 0.2s ease-in;
+}
+
+.unit {
+    background-color: #0f0;
+}
+
+.field {
+    background-color: #000;
+    transition: background-color 0.2s ease-in;
 }

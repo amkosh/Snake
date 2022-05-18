@@ -35,11 +35,11 @@ function initItems() {
 }
 
 function addItem() {
-    let a = Math.floor(Math.random(9)*10) + Math.floor(Math.random(9)*10);
-    let b = Math.floor(Math.random(9)*10) + Math.floor(Math.random(9)*10);
-    while(field[a][b].style.background != ""){
-        a = Math.floor(Math.random(9)*10) + Math.floor(Math.random(9)*10);
-        b = Math.floor(Math.random(9)*10) + Math.floor(Math.random(9)*10);
+    let a = getRandomInt(0, 19);
+    let b = getRandomInt(0, 19);
+    while(field[a][b].className != "field"){
+        a = getRandomInt(0, 19);
+        b = getRandomInt(0, 19);
     }
     items[a][b] = 1;
     drawField();
@@ -52,19 +52,21 @@ function initField(){
             let div = document.createElement('div');
             div.id = ++id;
             field[i][j] = div;
+            first.appendChild(field[i][j]);
         }
     }
 }
+
 function drawField(){
     if(fail == false){
         for(let i = 0; i < 20; i++) {
             for(let j = 0; j < 20; j++){
                 if(items[i][j] == 1){
-                    field[i][j].style.background = "#ff0000";
+                    field[i][j].className = "item";
                 } else {
-                    field[i][j].style.background = "";
-                }            
-                first.appendChild(field[i][j]);
+                    field[i][j].className = "field";
+                }
+                
             }
         }
         initUnit();
@@ -86,7 +88,7 @@ function colCheck(){
         unitGrowUp();
         
     } //Проверка на змею
-    else if (field[x][y].style.background == "rgb(0, 255, 0)") {
+    else if (field[x][y].className == "unit") {
         fail = true;
         info.parentElement.innerHTML = 'GAME OVER!'
     }
@@ -101,7 +103,7 @@ function initUnit() {
     for(let i = 0; i < unitSize; i++){
         let tmpX = unitCellX[i];
         let tmpY = unitCellY[i];
-        field[tmpX][tmpY].style.background = "#00ff00";
+        field[tmpX][tmpY].className = "unit";
     }
     //field[x][y].style.background = "#00ff00";
 }
@@ -125,6 +127,12 @@ function move(event){
         unitCellY.pop();
         drawField();
     }
+}
+
+function getRandomInt(min, max) {
+    min = Math.ceil(min);
+    max = Math.floor(max);
+    return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
 
