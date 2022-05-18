@@ -20,6 +20,8 @@ body {
     padding: 15px;
     display: flex;
     flex-direction: column;
+    width: 200px;
+    border: dashed rgb(28, 83, 97) 1px;
 }
 
 

@@ -23,19 +23,20 @@ let rAF = null;
 //Счетчик кадров
 let count = 0;
 
+document.body.addEventListener("keydown", controls);
+
+//Заполнение массива поля
 for(let i = 0; i < 20; i++) {
     field[i] = [20];
 }
 
+//Заполнение массива предметов
 for(let i = 0; i < 20; i++) {
     items[i] = [20];
 }
 
-initItems();
 initField();
-drawField();
-addItem();
-document.body.addEventListener("keydown", controls);
+restart();
 
 function controls(event){
     if(event.key == ' '){
@@ -117,8 +118,31 @@ function gameOver() {
         field[tmpX][tmpY].className = "dead";
     }
     fail = true;
-    info.parentElement.innerHTML = 'GAME OVER!'
+    document.getElementById("game_over").innerText = 'GAME OVER!';
     cancelAnimationFrame(rAF);
+}
+
+function restart() {
+    x = 9;
+    y = 9;
+    isPause = false;
+    fail = false;
+    unitSize = 1;
+    score = 0;
+    level = 0;
+    speed = 15;
+    document.getElementById("game_over").innerText = '';
+    infoLvl.innerText = level;
+    direction = 'ArrowUp';
+
+    unitCellX = [];
+    unitCellY = [];
+    unitCellX.push(x);
+    unitCellY.push(y);
+
+    initItems();
+    drawField();
+    addItem();
 }
 
 function unitGrowUp() {
@@ -131,6 +155,9 @@ function lvlUp() {
         speed--;
         level++;
         infoLvl.innerText = level;
+    }
+    if(unitSize == 400){
+        document.getElementById("game_over").innerText = 'YOU WON!!!';
     }
 }
 
