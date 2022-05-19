@@ -1,3 +1,4 @@
+
 let first = document.getElementById("first");   //Сегмент, куда будет помещено игровое поле
 let info = document.getElementById("score");    //Для вывода очков
 let infoLvl = document.getElementById('lvl');   //Для вывода уровня
@@ -26,15 +27,16 @@ let selfDestruct = true;
 function autoMoveToggle(){
     autoMove = !autoMove;
 }
-
 function bordersToggle(){
     borders = !borders;
 }
-
 function selfDestructToggle(){
     selfDestruct = !selfDestruct;
 }
+//
 
+//Очки, таблица рекордов
+let hiScore = [100000, 90000, 80000, 70000, 60000, 50000, 40000, 30000, 20000, 10000];
 function getScore(){
     if(autoMove && borders && selfDestruct){
         return 100;
@@ -43,6 +45,33 @@ function getScore(){
     } else if (autoMove || borders || selfDestruct) {
         return 30;
     }
+}
+
+function hiScoreDraw() {
+    for(let i = 0; i < 10; i++){
+        if(i+1 == 10){
+            document.getElementById('p' + (i+1)).innerText = (i+1) + '.' + hiScore[i];
+        } else {
+            document.getElementById('p' + (i+1)).innerText = (i+1) + '. ' + hiScore[i];
+        }
+    }
+}
+
+function hiScoreSave(){
+    let pos = 10;
+    for (let i = 0; i < hiScore.length; i++){
+        console.log(hiScore[i]);
+        if(score > hiScore[i]){
+            pos = i;
+            break;
+        } else {
+            continue;
+        }
+    }
+    hiScore.splice(pos, 0, score);
+    hiScore.pop();
+    document.getElementById('p' + (pos+1)).style.color = '#f00';
+    hiScoreDraw();
 }
 
 // следим за кадрами анимации, чтобы если что — остановить игру
@@ -149,6 +178,7 @@ function colCheck(){
         items[x][y] = 0;
         console.log(getScore());
         score += getScore();
+        hiScoreSave();
         unitSize++;
         unitGrowUp();
         lvlUp();
@@ -193,6 +223,7 @@ function restart() {
     initItems();
     drawField();
     addItem();
+    hiScoreDraw()
 }
 
 //Рост змеи при поглощении предмета
