@@ -7,11 +7,6 @@ header {
     padding: 0px 0px 0px 25px;
 }
 
-#first div {
-    width: 20px;
-    height: 20px;
-    border: dashed rgb(28, 83, 97) 1px;
-}
 
 body {
     background: rgb(0, 23, 36);
@@ -29,11 +24,24 @@ body {
     background-color: rgb(0, 14, 22);
 }
 
+.block {
+    background-color: #555;
+    border: solid 1px #555;
+    width: 20px;
+    height: 20px;
+}
+
 
 .item {
     background-color: #f00;
     transition: background-color 0.2s ease-in;
     animation: itemColor  1s alternate infinite ease-out;
+}
+
+.bonus__item {
+    background-color: rgb(0, 140, 255);
+    transition: background-color 0.1s ease-in;
+    animation: itemBonus  0.3s alternate infinite ease-out;
 }
 
 .unit {
@@ -47,6 +55,9 @@ body {
 .field {
     background-color: #000;
     transition: background-color 0.2s ease-in;
+    width: 20px;
+    height: 20px;
+    border: dashed rgb(28, 83, 97) 1px;
 }
 
 .play__field {
@@ -76,6 +87,11 @@ button {
 @keyframes itemColor {
     from {background-color: #f00;}
     to {background-color: #ff9900;}
+}
+
+@keyframes itemBonus {
+    from {background-color: rgb(0, 217, 255);}
+    to {background-color: #ffffff;}
 }
 
 #params {

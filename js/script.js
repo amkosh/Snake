@@ -94,6 +94,10 @@ function drawScore() {
 let rAF = null;
 //Счетчик кадров
 let count = 0;
+//Таймер бонуса
+let bonusTimer = 0;
+let bonusX = 0;
+let bonusY = 0;
 
 document.body.addEventListener("keydown", controls); //Обработчик ввода
 
@@ -142,6 +146,26 @@ function addItem() {
     drawField();
 }
 
+//Добавления бонуса на поле
+function addBonusItem() {
+    if(getRandomInt(0,1000) == 7 && bonusTimer == 0){
+        let a = getRandomInt(0, 19);
+        let b = getRandomInt(0, 19);
+        while(field[a][b].className != "field"){
+            a = getRandomInt(0, 19);
+            b = getRandomInt(0, 19);
+        }
+        items[a][b] = 2;
+        bonusX = a;
+        bonusY = b;
+        bonusTimer = 150;
+        drawField();
+    }
+    if(bonusTimer == 0){
+        items[bonusX][bonusY] = 0;
+    }
+}
+
 //Заполнение массива div'ами и их размещение на странице
 function initField(){
     let id = 0;
@@ -160,9 +184,15 @@ function drawField(){
     if(fail == false){
         for(let i = 0; i < 20; i++) {
             for(let j = 0; j < 20; j++){
-                if(items[i][j] == 1){
-                    field[i][j].className = "item";
-                } else {
+                if(items[i][j] != 0){
+                    switch(items[i][j]){
+                        case 1: field[i][j].className = "item";
+                        break;
+                        case 2: field[i][j].className = "bonus__item";
+                        break;
+                    }
+                    
+                } else if (field[i][j].className != 'block') {
                     field[i][j].className = "field";
                 }
             }
@@ -190,7 +220,7 @@ function colCheck(){
     }
     
     //Проверка на предмет
-    else if(items[x][y]){
+    else if(items[x][y] == 1){
         addItem();
         items[x][y] = 0;
         score += getScore();
@@ -198,8 +228,22 @@ function colCheck(){
         unitSize++;
         unitGrowUp();
         lvlUp();
-    } //Проверка на змею
+    }
+
+    //Проверка на бонус
+    else if (items[x][y] == 2){
+        items[x][y] = 0;
+        score += 5000;
+        drawScore();
+    }
+
+    //Проверка на змею
     else if (field[x][y].className == "unit" && selfDestruct) {
+        gameOver();
+    }
+
+    //Проверка на блоки
+    else if (field[x][y].className == "block" && borders) {
         gameOver();
     }
 }
@@ -319,6 +363,11 @@ function loop() {
         move(direction);
       count = 0;
     }
+    if(bonusTimer == 0){
+        addBonusItem();
+    } else {
+        bonusTimer--;
+    }
 }
 
 //Пауза
@@ -337,3 +386,14 @@ function pause() {
         document.getElementById("game_over").className = 'gameover';
     }
 }
+
+function loadLevel() {
+    for(let i = 0; i < 20; i++) {
+        for(let j = 0; j < 20; j++){
+            if((i < 2 || i > 17)||(j < 2 || j > 17)){
+                    field[i][j].className = "block";
+            }
+        }
+    }
+}
+
