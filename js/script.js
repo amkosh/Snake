@@ -2,6 +2,7 @@
 let first = document.getElementById("first");   //Сегмент, куда будет помещено игровое поле
 let info = document.getElementById("score");    //Для вывода очков
 let infoLvl = document.getElementById('lvl');   //Для вывода уровня
+let infoSize = document.getElementById('size'); //Для вывода длины змеи
 let field = [20];   //Создаем массив для игрового поля (количество рядов)
 let items = [20];   //Создаем массив для предметов (той же величины, что и поле)
 let score = 0;  //Счетчик очков
@@ -16,7 +17,7 @@ let fail = false;   //Gameover
 let isPause = false;    //Pause
 
 let direction = 'ArrowUp';  //Начальная ориентация змеи
-let speed = 15; //Число кадров перед обновлением
+let speed = 20; //Число кадров перед обновлением
 let level = 0;  //Начальный уровень
 
 //Параметры
@@ -78,6 +79,17 @@ function hiScoreSave(){
     hiScoreDraw();
 }
 
+function drawScore() {
+    for (let i = 0; i < hiScore.length; i++){
+        if(score > hiScore[i]){
+            info.style.color = '#f00';
+        }
+    }
+
+    info.innerText = score;
+    infoSize.innerText = unitSize;
+}
+
 // следим за кадрами анимации, чтобы если что — остановить игру
 let rAF = null;
 //Счетчик кадров
@@ -100,10 +112,12 @@ restart();  //Старт
 
 //Обработчик ввода
 function controls(event){
-    if(event.key == ' '){
-        pause();
-    } else if (isPause == true) {
-        move(event.key);
+    if(!fail){
+        if(event.key == ' '){
+            pause();
+        } else if (isPause == true) {
+            move(event.key);
+        }
     }
 }
 
@@ -154,7 +168,6 @@ function drawField(){
             }
         }
         initUnit();
-        info.innerText = score;
     }
 }
 
@@ -181,7 +194,7 @@ function colCheck(){
         addItem();
         items[x][y] = 0;
         score += getScore();
-        hiScoreSave();
+        drawScore();
         unitSize++;
         unitGrowUp();
         lvlUp();
@@ -193,6 +206,7 @@ function colCheck(){
 
 //Остановка игры при проигрыше
 function gameOver() {
+    hiScoreSave();
     for(let i = 0; i < unitSize; i++){
         let tmpX = unitCellX[i];
         let tmpY = unitCellY[i];
@@ -200,6 +214,7 @@ function gameOver() {
     }
     fail = true;
     document.getElementById("game_over").innerText = 'GAME OVER!';
+    document.getElementById("game_over").className = 'gameover';
     cancelAnimationFrame(rAF);
 }
 
@@ -214,6 +229,7 @@ function restart() {
     level = 0;
     speed = 15;
     document.getElementById("game_over").innerText = '';
+    document.getElementById("game_over").className = '';
     infoLvl.innerText = level;
     direction = 'ArrowUp';
     rAF = null;
@@ -237,8 +253,8 @@ function unitGrowUp() {
 
 //Повышение уровня сложности, проверка на победу
 function lvlUp() {
-    if(score % 1000 == 0) {
-        speed--;
+    if(unitSize % 10 == 0) {
+        speed -=2;
         level++;
         infoLvl.innerText = level;
     }
@@ -311,9 +327,11 @@ function pause() {
         rAF = requestAnimationFrame(loop);
         button.innerText = 'PAUSE';
         document.getElementById("game_over").innerText = '';
+        document.getElementById("game_over").className = '';
     } else {
         cancelAnimationFrame(rAF);
         button.innerText = 'RESUME';
         document.getElementById("game_over").innerText = 'PAUSE';
+        document.getElementById("game_over").className = 'gameover';
     }
 }
