@@ -35,18 +35,21 @@ function selfDestructToggle(){
 }
 //
 
-//Очки, таблица рекордов
+//Таблица рекордов
 let hiScore = [100000, 90000, 80000, 70000, 60000, 50000, 40000, 30000, 20000, 10000];
+
+//Выдача очков в зависимости от сложности
 function getScore(){
     if(autoMove && borders && selfDestruct){
-        return 100;
+        return 100 * (level+1);
     } else if(!autoMove && !borders && !selfDestruct){
-        return 20;
+        return 20 * (level+1);
     } else if (autoMove || borders || selfDestruct) {
-        return 30;
+        return 40 * (level+1);
     }
 }
 
+//Обновление таблицы рекордов
 function hiScoreDraw() {
     for(let i = 0; i < 10; i++){
         if(i+1 == 10){
@@ -60,7 +63,6 @@ function hiScoreDraw() {
 function hiScoreSave(){
     let pos = 10;
     for (let i = 0; i < hiScore.length; i++){
-        console.log(hiScore[i]);
         if(score > hiScore[i]){
             pos = i;
             break;
@@ -70,7 +72,9 @@ function hiScoreSave(){
     }
     hiScore.splice(pos, 0, score);
     hiScore.pop();
-    document.getElementById('p' + (pos+1)).style.color = '#f00';
+    if(pos != 10){
+        document.getElementById('p' + (pos+1)).style.color = '#f00';
+    }
     hiScoreDraw();
 }
 
@@ -176,7 +180,6 @@ function colCheck(){
     else if(items[x][y]){
         addItem();
         items[x][y] = 0;
-        console.log(getScore());
         score += getScore();
         hiScoreSave();
         unitSize++;
@@ -250,6 +253,10 @@ function initUnit() {
         let tmpX = unitCellX[i];
         let tmpY = unitCellY[i];
         field[tmpX][tmpY].className = "unit";
+
+        if(i == 0){
+            field[tmpX][tmpY].className = "unit__head";
+        }
     }
 }
 
@@ -303,8 +310,10 @@ function pause() {
     if(isPause){
         rAF = requestAnimationFrame(loop);
         button.innerText = 'PAUSE';
+        document.getElementById("game_over").innerText = '';
     } else {
         cancelAnimationFrame(rAF);
         button.innerText = 'RESUME';
+        document.getElementById("game_over").innerText = 'PAUSE';
     }
 }
