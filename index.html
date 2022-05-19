@@ -30,7 +30,33 @@
             <div>
                 <p id="game_over"></p>
             </div>
-            
+        </div>
+
+        <div id="params">
+            <p>Settings</p>
+            <div>
+                <p>Automove:</p>
+                <label for="autoOn">on</label>
+                <input type="radio" name="automove" id="autoOn"  onchange="autoMoveToggle(), this.blur()" checked>
+                <label for="autoOff">off</label>
+                <input type="radio" name="automove" id="autoOff" onchange="autoMoveToggle(), this.blur()">
+            </div>
+            <br>
+            <div>
+                <p>Borders:</p>
+                <label for="bordersOn">on</label>
+                <input type="radio" name="borders" id="bordersOn"  onchange="bordersToggle(), this.blur()" checked>
+                <label for="bordersOff">off</label>
+                <input type="radio" name="borders" id="bordersOff" onchange="bordersToggle(), this.blur()">
+            </div>
+            <br>
+            <div>
+                <p>Self destruct:</p>
+                <label for="selfDestructOn">on</label>
+                <input type="radio" name="selfDestruct" id="selfDestructOn"  onchange="selfDestructToggle(), this.blur()" checked>
+                <label for="selfDestructOff">off</label>
+                <input type="radio" name="selfDestruct" id="selfDestructOff" onchange="selfDestructToggle(), this.blur()">
+            </div>
         </div>
         
     </div>

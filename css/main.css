@@ -72,3 +72,16 @@ button {
     from {background-color: #f00;}
     to {background-color: #ff9900;}
 }
+
+#params {
+    padding: 15px;
+    display: flex;
+    flex-direction: column;
+    width: 200px;
+    border: dashed rgb(28, 83, 97) 1px;
+    background-color: rgb(0, 14, 22);
+}
+
+#params div{
+    font-size: 10px;
+}

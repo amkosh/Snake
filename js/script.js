@@ -18,6 +18,33 @@ let direction = 'ArrowUp';  //Начальная ориентация змеи
 let speed = 15; //Число кадров перед обновлением
 let level = 0;  //Начальный уровень
 
+//Параметры
+let autoMove = true;
+let borders = true;
+let selfDestruct = true;
+
+function autoMoveToggle(){
+    autoMove = !autoMove;
+}
+
+function bordersToggle(){
+    borders = !borders;
+}
+
+function selfDestructToggle(){
+    selfDestruct = !selfDestruct;
+}
+
+function getScore(){
+    if(autoMove && borders && selfDestruct){
+        return 100;
+    } else if(!autoMove && !borders && !selfDestruct){
+        return 20;
+    } else if (autoMove || borders || selfDestruct) {
+        return 30;
+    }
+}
+
 // следим за кадрами анимации, чтобы если что — остановить игру
 let rAF = null;
 //Счетчик кадров
@@ -101,18 +128,32 @@ function drawField(){
 //Проверка столкновений
 function colCheck(){
     //Проверка на стены
-    if(x < 0 || x > 19 || y < 0 || y > 19) {
+    if((x < 0 || x > 19 || y < 0 || y > 19) && borders) {
         gameOver();
-    } //Проверка на предмет
+    }
+
+    //Телепорт сквозь рамки
+    else if (x < 0){
+        x = 19;
+    } else if (x > 19){
+        x = 0;
+    } else if (y < 0){
+        y = 19;
+    } else if (y > 19){
+        y = 0;
+    }
+    
+    //Проверка на предмет
     else if(items[x][y]){
         addItem();
         items[x][y] = 0;
-        score += 100;
+        console.log(getScore());
+        score += getScore();
         unitSize++;
         unitGrowUp();
         lvlUp();
     } //Проверка на змею
-    else if (field[x][y].className == "unit") {
+    else if (field[x][y].className == "unit" && selfDestruct) {
         gameOver();
     }
 }
@@ -217,7 +258,7 @@ function loop() {
     // начинаем анимацию
     rAF = requestAnimationFrame(loop);
     // фигура сдвигается вниз каждые 35 кадров
-    if (++count > speed) {
+    if (++count > speed && autoMove) {
 		//Движение змеи
         move(direction);
       count = 0;
