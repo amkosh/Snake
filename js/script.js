@@ -409,6 +409,7 @@ function mapDraw() {
 //Редактор уровней
 let editMap = [20];
 function runEditor(){
+    let tempMap = [20];
     editor = !editor;
     if(editor){
         document.getElementById('save').className = 'button';
@@ -419,24 +420,29 @@ function runEditor(){
             }
         }
         for(let i = 0; i < 20; i++) {
-            editMap[i] = [20];
+            tempMap[i] = [20];
         }
         for(let i = 0; i < 20; i++) {
             for(let j = 0; j < 20; j++){
-                editMap[i][j] = 0;
+                tempMap[i][j] = 0;
             }
         }
+        editMap = tempMap;
     } else if (!editor){
         document.getElementById('save').className = 'hidden_btn';
         first.removeEventListener("click", addBlock);
         restart();
     }
-
 }
 
 function addBlock(event){
     id = event.target.id;
-    document.getElementById(id).className = 'block_edit';
+    if(document.getElementById(id).className == 'editor'){
+        document.getElementById(id).className = 'block_edit';
+    } else if (document.getElementById(id).className == 'block_edit'){
+        document.getElementById(id).className = 'editor';
+    }
+    
 }
 
 function saveMap(){
