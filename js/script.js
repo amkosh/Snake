@@ -226,6 +226,8 @@ function restart() {
     fail = false;
     unitSize = 1;
     score = 0;
+    info.style.color = '#fff';
+    drawScore();
     level = 0;
     speed = 15;
     document.getElementById("game_over").innerText = '';
@@ -253,7 +255,7 @@ function unitGrowUp() {
 
 //Повышение уровня сложности, проверка на победу
 function lvlUp() {
-    if(unitSize % 10 == 0) {
+    if((unitSize) % 10 == 0) {
         speed -=2;
         level++;
         infoLvl.innerText = level;
