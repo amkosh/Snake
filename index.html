@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <head>
-    <title>Simple Site</title>
+    <title>Eat Snaker</title>
     <meta charset="utf-8">
     <link href="css/main.css" rel="stylesheet">
     <link rel="preconnect" href="https://fonts.googleapis.com"> 
@@ -78,13 +78,27 @@
                 <label for="selfDestructOff">off</label>
                 <input type="radio" name="selfDestruct" id="selfDestructOff" onchange="selfDestructToggle(), this.blur()">
             </div>
+            <br>
+            <div>
+                <p>Stage:</p>
+                <select id="stage" onchange="setStage(), this.blur()">
+                    <option value="0">1</option>
+                    <option value="1"> 2</option>
+                </select>
+            </div>
+
+
+            
         </div>
         
     </div>
     <div>
         <button id="pause" onclick="pause(), this.blur()">START</button>
         <button id="restart" onclick="restart(), this.blur()">RESTART</button>
+        <button id="editor" onclick="runEditor(), this.blur()">EDITOR</button>
+        <button id="save" class="hidden_btn" onclick="saveMap(), this.blur()">SAVE</button>
     </div>
     
+    <script src="js/maps.js"></script>
     <script src="js/script.js"></script>
 </body>

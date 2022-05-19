@@ -1,4 +1,4 @@
-
+let stage = 0;
 let first = document.getElementById("first");   //Сегмент, куда будет помещено игровое поле
 let info = document.getElementById("score");    //Для вывода очков
 let infoLvl = document.getElementById('lvl');   //Для вывода уровня
@@ -15,6 +15,7 @@ unitCellY.push(y); //Добавляем первую ячейку в храни�
 let unitSize = 1;   //Счетчик длины змеи (для циклов)
 let fail = false;   //Gameover
 let isPause = false;    //Pause
+let editor = false;
 
 let direction = 'ArrowUp';  //Начальная ориентация змеи
 let speed = 20; //Число кадров перед обновлением
@@ -181,7 +182,7 @@ function initField(){
 
 //Отрисовка текущего состояния поля
 function drawField(){
-    if(fail == false){
+    if(!fail && !editor){
         for(let i = 0; i < 20; i++) {
             for(let j = 0; j < 20; j++){
                 if(items[i][j] != 0){
@@ -191,7 +192,6 @@ function drawField(){
                         case 2: field[i][j].className = "bonus__item";
                         break;
                     }
-                    
                 } else if (field[i][j].className != 'block') {
                     field[i][j].className = "field";
                 }
@@ -264,31 +264,34 @@ function gameOver() {
 
 //Рестарт, сброс параметров на начальное значение
 function restart() {
-    x = 9;
-    y = 9;
-    isPause = false;
-    fail = false;
-    unitSize = 1;
-    score = 0;
-    info.style.color = '#fff';
-    drawScore();
-    level = 0;
-    speed = 15;
-    document.getElementById("game_over").innerText = '';
-    document.getElementById("game_over").className = '';
-    infoLvl.innerText = level;
-    direction = 'ArrowUp';
-    rAF = null;
-
-    unitCellX = [];
-    unitCellY = [];
-    unitCellX.push(x);
-    unitCellY.push(y);
-
-    initItems();
-    drawField();
-    addItem();
-    hiScoreDraw()
+    if(!editor){
+        mapDraw();
+        x = 9;
+        y = 9;
+        isPause = false;
+        fail = false;
+        unitSize = 1;
+        score = 0;
+        info.style.color = '#fff';
+        drawScore();
+        level = 0;
+        speed = 15;
+        document.getElementById("game_over").innerText = '';
+        document.getElementById("game_over").className = '';
+        infoLvl.innerText = level;
+        direction = 'ArrowUp';
+        rAF = null;
+    
+        unitCellX = [];
+        unitCellY = [];
+        unitCellX.push(x);
+        unitCellY.push(y);
+    
+        initItems();
+        drawField();
+        addItem();
+        hiScoreDraw()
+    }
 }
 
 //Рост змеи при поглощении предмета
@@ -387,13 +390,78 @@ function pause() {
     }
 }
 
-function loadLevel() {
-    for(let i = 0; i < 20; i++) {
-        for(let j = 0; j < 20; j++){
-            if((i < 2 || i > 17)||(j < 2 || j > 17)){
-                    field[i][j].className = "block";
+//Загрузка карты
+function mapDraw() {
+    let map = maps['stage' + stage];
+    if(map){
+        for(let i = 0; i < 20; i++) {
+            for(let j = 0; j < 20; j++){
+                if(map[i][j] == 1){
+                    field[i][j].className = 'block';
+                } else {
+                    field[i][j].className = 'field';
+                }
             }
         }
     }
+}
+
+//Редактор уровней
+let editMap = [20];
+function runEditor(){
+    editor = !editor;
+    if(editor){
+        document.getElementById('save').className = 'button';
+        first.addEventListener("click", addBlock);
+        for(let i = 0; i < 20; i++) {
+            for(let j = 0; j < 20; j++){
+                field[i][j].className = 'editor';
+            }
+        }
+        for(let i = 0; i < 20; i++) {
+            editMap[i] = [20];
+        }
+        for(let i = 0; i < 20; i++) {
+            for(let j = 0; j < 20; j++){
+                editMap[i][j] = 0;
+            }
+        }
+    } else if (!editor){
+        document.getElementById('save').className = 'hidden_btn';
+        first.removeEventListener("click", addBlock);
+        restart();
+    }
+
+}
+
+function addBlock(event){
+    id = event.target.id;
+    document.getElementById(id).className = 'block_edit';
+}
+
+function saveMap(){
+    for(let i = 0; i < 20; i++) {
+        for(let j = 0; j < 20; j++){
+            if(field[i][j].className == 'block_edit'){
+                editMap[i][j] = 1;
+            }
+        }
+    }
+    let num = 0;
+    for(max in maps){
+        num++;
+    }
+    maps['stage' + num] = editMap;
+    let opt = document.createElement('option');
+    opt.value = num;
+    opt.innerText = num+1;
+    document.getElementById("stage").appendChild(opt);
+    runEditor();
+}
+
+function setStage(){
+    e = document.getElementById("stage");
+    stage = e.value;
+    restart();
 }
 

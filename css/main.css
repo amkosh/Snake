@@ -31,6 +31,19 @@ body {
     height: 20px;
 }
 
+.editor {
+    background-color: rgb(0, 120, 189);
+    border: dashed 1px rgb(143, 217, 252);
+    width: 20px;
+    height: 20px;
+}
+
+.block_edit {
+    background-color: rgb(255, 255, 255);
+    border: dashed 1px rgb(143, 217, 252);
+    width: 20px;
+    height: 20px;
+}
 
 .item {
     background-color: #f00;
@@ -83,6 +96,9 @@ button {
     outline: none;
 }
 
+.hidden_btn {
+    visibility: hidden;
+}
 
 @keyframes itemColor {
     from {background-color: #f00;}

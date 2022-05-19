@@ -6,8 +6,8 @@
     +four dimensions
     +speed of light (speed == 0)
 +reverse
-+levels
-+levelEditor
+    ++levels
+    ++levelEditor
 \\---
 
 //release 0.0.5
