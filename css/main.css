@@ -59,10 +59,16 @@ body {
 
 .unit {
     background-color: #0a0;
+    width: 20px;
+    height: 20px;
+    border: dashed 1px #0a0;
 }
 
 .unit__head {
     background-color: #0f0;
+    width: 20px;
+    height: 20px;
+    border: solid 1px #0f0;
 }
 
 .field {
@@ -81,6 +87,9 @@ body {
 
 .dead {
     background-color: rgb(110, 44, 0);
+    width: 20px;
+    height: 20px;
+    border: solid 1px rgb(110, 44, 0);
 }
 
 button {
@@ -138,4 +147,11 @@ button {
     padding: 7px;
     text-align: center;
     border: solid red 2px;
+}
+
+.message {
+    text-align: center;
+    width: 974px;
+    padding: 10px;
+    border:dashed 1px rgb(28, 83, 97)
 }

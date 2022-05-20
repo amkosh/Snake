@@ -3,6 +3,7 @@ let first = document.getElementById("first");   //Сегмент, куда бу�
 let info = document.getElementById("score");    //Для вывода очков
 let infoLvl = document.getElementById('lvl');   //Для вывода уровня
 let infoSize = document.getElementById('size'); //Для вывода длины змеи
+let message = document.getElementById('message'); //Для вывода информации
 let field = [20];   //Создаем массив для игрового поля (количество рядов)
 let items = [20];   //Создаем массив для предметов (той же величины, что и поле)
 let score = 0;  //Счетчик очков
@@ -259,6 +260,8 @@ function gameOver() {
     fail = true;
     document.getElementById("game_over").innerText = 'GAME OVER!';
     document.getElementById("game_over").className = 'gameover';
+    message.innerText = 'Press RESTART for another try!'
+    message.className = 'message'
     cancelAnimationFrame(rAF);
 }
 
@@ -266,6 +269,7 @@ function gameOver() {
 function restart() {
     if(!editor){
         mapDraw();
+        mapLoader();
         x = 9;
         y = 9;
         isPause = false;
@@ -278,6 +282,7 @@ function restart() {
         speed = 15;
         document.getElementById("game_over").innerText = '';
         document.getElementById("game_over").className = '';
+        message.className = 'hidden_btn';
         infoLvl.innerText = level;
         direction = 'ArrowUp';
         rAF = null;
@@ -303,18 +308,18 @@ function unitGrowUp() {
 //Повышение уровня сложности, проверка на победу
 function lvlUp() {
     if((unitSize) % 10 == 0) {
-        speed -=2;
+        speed--;
         level++;
         infoLvl.innerText = level;
     }
-    if(unitSize == 100){
+    if(unitSize >= 100){
         document.getElementById("game_over").innerText = 'YOU WON!!!';
     }
 }
 
 //Отрисовка змеи
 function initUnit() {
-    for(let i = 0; i < unitSize; i++){
+    for(let i = unitSize-1; i >= 0; i--){
         let tmpX = unitCellX[i];
         let tmpY = unitCellY[i];
         field[tmpX][tmpY].className = "unit";
@@ -413,10 +418,16 @@ function runEditor(){
     editor = !editor;
     if(editor){
         document.getElementById('save').className = 'button';
+        document.getElementById('delete').className = 'button';
         first.addEventListener("click", addBlock);
+        let map = maps['stage' + stage];
         for(let i = 0; i < 20; i++) {
             for(let j = 0; j < 20; j++){
-                field[i][j].className = 'editor';
+                if(map[i][j] == 1){
+                    field[i][j].className = 'block_edit';
+                } else {
+                    field[i][j].className = 'editor';
+                }
             }
         }
         for(let i = 0; i < 20; i++) {
@@ -430,6 +441,7 @@ function runEditor(){
         editMap = tempMap;
     } else if (!editor){
         document.getElementById('save').className = 'hidden_btn';
+        document.getElementById('delete').className = 'hidden_btn';
         first.removeEventListener("click", addBlock);
         restart();
     }
@@ -458,10 +470,7 @@ function saveMap(){
         num++;
     }
     maps['stage' + num] = editMap;
-    let opt = document.createElement('option');
-    opt.value = num;
-    opt.innerText = num+1;
-    document.getElementById("stage").appendChild(opt);
+    mapLoader();
     runEditor();
 }
 
@@ -469,5 +478,43 @@ function setStage(){
     e = document.getElementById("stage");
     stage = e.value;
     restart();
+    if(editor){
+        let map = maps['stage' + stage];
+        for(let i = 0; i < 20; i++) {
+            for(let j = 0; j < 20; j++){
+                if(map[i][j] == 1){
+                    field[i][j].className = 'block_edit';
+                } else {
+                    field[i][j].className = 'editor';
+                }
+            }
+        }
+    }
 }
 
+function deleteMap() {
+    if (stage != 0){
+        message.innerText = `Stage ${stage} deleted!`;
+        message.className = 'message';
+        delete maps['stage' + stage];
+        stage = 0;
+        runEditor();
+        restart();
+    } else {
+        message.innerText = "Stage 1 can't be deleted!";
+        message.className = 'message';
+    }
+}
+
+function mapLoader() {
+    document.getElementById("stage").innerHTML = '';
+    let num = 0;
+    for(max in maps){
+        let opt = document.createElement('option');
+        opt.value = num;
+        opt.id = num;
+        opt.innerText = num+1;
+        document.getElementById("stage").appendChild(opt);
+        num++;
+    }
+}

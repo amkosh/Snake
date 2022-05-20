@@ -2,13 +2,16 @@
     ++bonus item (5000 points)
     ++blocks on field
 +achievments:
-    +uroboros
-    +four dimensions
-    +speed of light (speed == 0)
+ +uroboros
+ +four dimensions
+ +speed of light (speed == 0)
 +reverse
     ++levels
     ++levelEditor
+    ++editor load map
+    ++deleteMap
 \\---
 
 //release 0.0.5
++twin snakes
 +add phone support
