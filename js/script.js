@@ -9,11 +9,11 @@ let items = [20];   //Создаем массив для предметов (т�
 let score = 0;  //Счетчик очков
 let x = 9;  //Начальная координата игрока
 let y = 9;  //Начальная координата игрока
-let unitCellX = []; //Хранилище координат X для отображения всей длины змеи
-let unitCellY = []; //Хранилище координат Y для отображения всей длины змеи
-unitCellX.push(x); //Добавляем первую ячейку в хранилище змеи
-unitCellY.push(y); //Добавляем первую ячейку в хранилище змеи
-let unitSize = 1;   //Счетчик длины змеи (для циклов)
+//let unitCellX = []; //Хранилище координат X для отображения всей длины змеи
+//let unitCellY = []; //Хранилище координат Y для отображения всей длины змеи
+//unitCellX.push(x); //Добавляем первую ячейку в хранилище змеи
+//unitCellY.push(y); //Добавляем первую ячейку в хранилище змеи
+//let unitSize = 1;   //Счетчик длины змеи (для циклов)
 let fail = false;   //Gameover
 let isPause = false;    //Pause
 let editor = false;
@@ -89,7 +89,7 @@ function drawScore() {
     }
 
     info.innerText = score;
-    infoSize.innerText = unitSize;
+    infoSize.innerText = snake.unitSize;
 }
 
 // следим за кадрами анимации, чтобы если что — остановить игру
@@ -113,6 +113,8 @@ for(let i = 0; i < 20; i++) {
     items[i] = [20];
 }
 
+let snake = new Snake();
+
 initField();    //Заполнение поля div'ами
 restart();  //Старт
 
@@ -122,7 +124,7 @@ function controls(event){
         if(event.key == ' '){
             pause();
         } else if (isPause == true) {
-            move(event.key);
+            snake.move(event.key);
         }
     }
 }
@@ -198,7 +200,7 @@ function drawField(){
                 }
             }
         }
-        initUnit();
+        snake.initUnit();
     }
 }
 
@@ -224,11 +226,11 @@ function colCheck(){
     else if(items[x][y] == 1){
         addItem();
         items[x][y] = 0;
+        snake.unitSize++;
+        snake.unitGrowUp();
+        lvlUp();
         score += getScore();
         drawScore();
-        unitSize++;
-        unitGrowUp();
-        lvlUp();
     }
 
     //Проверка на бонус
@@ -252,9 +254,9 @@ function colCheck(){
 //Остановка игры при проигрыше
 function gameOver() {
     hiScoreSave();
-    for(let i = 0; i < unitSize; i++){
-        let tmpX = unitCellX[i];
-        let tmpY = unitCellY[i];
+    for(let i = 0; i < snake.unitSize; i++){
+        let tmpX = snake.unitCellX[i];
+        let tmpY = snake.unitCellY[i];
         field[tmpX][tmpY].className = "dead";
     }
     fail = true;
@@ -268,6 +270,7 @@ function gameOver() {
 //Рестарт, сброс параметров на начальное значение
 function restart() {
     if(!editor){
+        
         mapDraw();
         mapLoader();
         x = 9;
@@ -287,36 +290,39 @@ function restart() {
         direction = 'ArrowUp';
         rAF = null;
     
-        unitCellX = [];
-        unitCellY = [];
-        unitCellX.push(x);
-        unitCellY.push(y);
+        snake.unitCellX = [];
+        snake.unitCellY = [];
+        snake.unitCellX.push(x);
+        snake.unitCellY.push(y);
     
         initItems();
-        drawField();
-        addItem();
+        
+        
         hiScoreDraw()
+        addItem();
+        drawField();
     }
 }
 
+/*
 //Рост змеи при поглощении предмета
 function unitGrowUp() { //TODO: Вынесено в класс
     unitCellX.push(x);
     unitCellY.push(y);
 }
-
+*/
 //Повышение уровня сложности, проверка на победу
 function lvlUp() {
-    if((unitSize) % 10 == 0) {
+    if((snake.unitSize) % 10 == 0) {
         speed--;
         level++;
         infoLvl.innerText = level;
     }
-    if(unitSize >= 100){
+    if(snake.unitSize >= 100){
         document.getElementById("game_over").innerText = 'YOU WON!!!';
     }
 }
-
+/*
 //Отрисовка змеи
 function initUnit() { //TODO: Вынесено в класс
     for(let i = unitSize-1; i >= 0; i--){
@@ -341,7 +347,7 @@ function move(event){ //TODO: Вынесено в класс
         ){
             unitReverse();
         }
-        */
+        
         switch(event){
             case 'ArrowUp': --x;    direction = event;
             break;
@@ -362,7 +368,7 @@ function move(event){ //TODO: Вынесено в класс
         drawField();
     }
 }
-
+*/
 //Рандомное целое число
 function getRandomInt(min, max) {
     min = Math.ceil(min);
@@ -377,7 +383,7 @@ function loop() {
     // фигура сдвигается вниз каждые 35 кадров
     if (++count > speed && autoMove) {
 		//Движение змеи
-        move(direction);
+        snake.move(direction);
       count = 0;
     }
     if(bonusTimer == 0){
@@ -526,7 +532,7 @@ function mapLoader() {
         num++;
     }
 }
-
+/*
 function unitReverse() { //TODO: Вынесено в класс
     //Помещаем в x и y последние элемента массивов Cell
     x = unitCellX[unitCellX.length-1];
@@ -535,89 +541,4 @@ function unitReverse() { //TODO: Вынесено в класс
     unitCellX.reverse();
     unitCellY.reverse();
 }
-
-//Отдельный класс для змеюки
-class Snake {
-    constructor() {
-        this.x = 9;  //Начальная координата игрока
-        this.y = 9;  //Начальная координата игрока
-        this.unitCellX = []; //Хранилище координат X для отображения всей длины змеи
-        this.unitCellY = []; //Хранилище координат Y для отображения всей длины змеи
-
-        unitCellX.push(x); //Добавляем первую ячейку в хранилище змеи
-        unitCellY.push(y); //Добавляем первую ячейку в хранилище змеи
-        this.orientation = [];
-        this.orientation.push('U');
-        this.unitSize = 1;
-    }
-
-    unitReverse() {
-        //Помещаем в x и y последние элемента массивов Cell
-        this.x = unitCellX[unitCellX.length-1];
-        this.y = unitCellY[unitCellY.length-1];
-        //Разворачиваем массивы
-        this.unitCellX.reverse();
-        this.unitCellY.reverse();
-    }
-
-    move(event){
-        if(fail == false){
-            /*
-            if((event == 'ArrowUp' && direction == 'ArrowDown')||
-                (event == 'ArrowDown' && direction == 'ArrowUp')||
-                (event == 'ArrowRight' && direction == 'ArrowLeft')||
-                (event == 'ArrowLeft' && direction == 'ArrowRight')
-            ){
-                unitReverse();
-            }
-            */
-            switch(event){
-                case 'ArrowUp': --x;    direction = event;
-                break;
-                case 'ArrowDown': ++x;  direction = event;
-                break;
-                case 'ArrowRight': ++y; direction = event;
-                break;
-                case 'ArrowLeft': --y;  direction = event;
-                break;
-                default: return;
-            }
-            count = 0;
-            colCheck();
-            this.unitCellX.unshift(x);
-            this.unitCellY.unshift(y);
-            this.unitCellX.pop();
-            this.unitCellY.pop();
-            drawField();
-        }
-    }
-
-    //Отрисовка змеи
-    initUnit() {
-        for(let i = this.unitSize-1; i >= 0; i--){
-            let tmpX = this.unitCellX[i];
-            let tmpY = this.unitCellY[i];
-            field[tmpX][tmpY].className = "unit";
-
-            if(i == 0){
-                field[tmpX][tmpY].className = "unit__head";
-            }
-        }
-    }
-
-    //Рост змеи при поглощении предмета
-    unitGrowUp() {
-        this.unitCellX.push(x);
-        this.unitCellY.push(y);
-        switch(direction) {
-            case 'ArrowUp': this.orientation = 'U';
-                break;
-                case 'ArrowDown': this.orientation = 'D';
-                break;
-                case 'ArrowRight': this.orientation = 'R';
-                break;
-                case 'ArrowLeft': this.orientation = 'L';
-                break;
-        }
-    }
-}
+*/
