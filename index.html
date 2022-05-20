@@ -80,6 +80,14 @@
             </div>
             <br>
             <div>
+                <p>Reverse:</p>
+                <label for="reverseOn">on</label>
+                <input type="radio" name="reverse" id="reverseOn"  onchange="reverseToggle(), this.blur()">
+                <label for="reverseOff">off</label>
+                <input type="radio" name="reverse" id="reverseOff" onchange="reverseToggle(), this.blur()" checked>
+            </div>
+            <br>
+            <div>
                 <p>Stage:</p>
                 <select id="stage" onchange="setStage(), this.blur()">
                     
@@ -102,4 +110,5 @@
     <script src="js/maps.js"></script>
     <script src="js/unitClass.js"></script>
     <script src="js/script.js"></script>
+    <script src="js/editor.js"></script>
 </body>

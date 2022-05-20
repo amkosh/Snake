@@ -12,93 +12,51 @@ class Snake {
     }
 
     unitReverse() {
-        //Помещаем в x и y последние элемента массивов Cell
-        x = this.unitCellX[0];
-        y = this.unitCellY[0];
-        //Разворачиваем массивы
-        //this.unitCellX[0] = this.unitCellX[this.unitCellX.length-1];
-        //this.unitCellY[0] = this.unitCellY[this.unitCellY.length-1];
-        //this.unitCellX[this.unitCellX.length-1] = this.tmpX;
-        //this.unitCellY[this.unitCellY.length-1] = this.tmpY;
-
         this.unitCellX.reverse();
         this.unitCellY.reverse();
         x = this.unitCellX[0];
         y = this.unitCellY[0];
         this.orientation.reverse();
-        switch(this.orientation[0]){    //TODO: Отказаться от direction
-            case 'ArrowUp': direction = 'ArrowDown';
-            break;
-            case 'ArrowDown': direction = 'ArrowUp';
-            break;
-            case 'ArrowRight': direction = 'ArrowLeft';
-            break;
-            case 'ArrowLeft': direction = 'ArrowRight';
-            break;
+
+        for(let i = 0; i < this.unitSize; i++){
+            switch(this.orientation[i]){
+                case 'ArrowUp': this.orientation[i] = 'ArrowDown';
+                break;
+                case 'ArrowDown': this.orientation[i] = 'ArrowUp';
+                break;
+                case 'ArrowRight': this.orientation[i] = 'ArrowLeft';
+                break;
+                case 'ArrowLeft': this.orientation[i] = 'ArrowRight';
+                break;
+            }
         }
     }
-
-    /*
-    move(event){
-        if(fail == false){
-            
-            if((event == 'ArrowUp' && direction == 'ArrowDown')||
-                (event == 'ArrowDown' && direction == 'ArrowUp')||
-                (event == 'ArrowRight' && direction == 'ArrowLeft')||
-                (event == 'ArrowLeft' && direction == 'ArrowRight')
-            ){
-                this.unitReverse();
-            }
-
-            switch(event){
-                case 'ArrowUp': this.orientation[0] = 'U';
-                break;
-                case 'ArrowDown': this.orientation[0] = 'D';
-                break;
-                case 'ArrowRight': this.orientation[0] = 'R';
-                break;
-                case 'ArrowLeft': this.orientation[0] = 'L';
-                break;
-                default: return;
-            }
-            
-            switch(event){
-                case 'ArrowUp': --x;    direction = event, this.orientation.unshift('U');
-                break;
-                case 'ArrowDown': ++x;  direction = event, this.orientation.unshift('D');
-                break;
-                case 'ArrowRight': ++y; direction = event, this.orientation.unshift('R');
-                break;
-                case 'ArrowLeft': --y;  direction = event, this.orientation.unshift('L');
-                break;
-                default: return;
-            }
-            count = 0;
-            colCheck();
-            this.unitCellX.unshift(x);
-            this.unitCellY.unshift(y);
-            this.unitCellX.pop();
-            this.unitCellY.pop();
-            this.orientation.pop();
-            drawField();
-        }
-        console.log(direction);
-        console.log(snake.orientation);
-    }
-    */
 
     move(event){
         if(!fail){
+            if((event == 'ArrowUp' && this.orientation[0] == 'ArrowDown')||
+                (event == 'ArrowDown' && this.orientation[0] == 'ArrowUp')||
+                (event == 'ArrowRight' && this.orientation[0] == 'ArrowLeft')||
+                (event == 'ArrowLeft' && this.orientation[0] == 'ArrowRight')
+            ){
+                if(reverse){
+                    this.unitReverse();
+                    return;
+                } else {
+                    return;
+                }
+            }
+
             this.orientation.unshift(event);
 
             switch(this.orientation[0]){
-                case 'ArrowUp': --x; //this.orientation.unshift('ArrowUp');
+                case 'ArrowUp': --x;
                 break;
-                case 'ArrowDown': ++x; //this.orientation.unshift('ArrowDown');
+                case 'ArrowDown': ++x;
                 break;
-                case 'ArrowRight': ++y; //this.orientation.unshift('ArrowRight');
+                case 'ArrowRight': ++y;
                 break;
-                case 'ArrowLeft': --y; //this.orientation.unshift('ArrowLeft');
+                case 'ArrowLeft': --y;
                 break;
                 default: return;
             }

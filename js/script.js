@@ -9,24 +9,19 @@ let items = [20];   //Создаем массив для предметов (т�
 let score = 0;  //Счетчик очков
 let x = 9;  //Начальная координата игрока
 let y = 9;  //Начальная координата игрока
-//let unitCellX = []; //Хранилище координат X для отображения всей длины змеи
-//let unitCellY = []; //Хранилище координат Y для отображения всей длины змеи
-//unitCellX.push(x); //Добавляем первую ячейку в хранилище змеи
-//unitCellY.push(y); //Добавляем первую ячейку в хранилище змеи
-//let unitSize = 1;   //Счетчик длины змеи (для циклов)
 let fail = false;   //Gameover
 let isPause = false;    //Pause
-let editor = false;
-
-//let direction = 'ArrowUp';  //Начальная ориентация змеи
+let editor = false; //Запущенный редактор
 let speed = 20; //Число кадров перед обновлением
 let level = 0;  //Начальный уровень
 
-//Параметры
+//Параметры (читы)
 let autoMove = true;
 let borders = true;
 let selfDestruct = true;
+let reverse = false;
 
+//Переключение параметров
 function autoMoveToggle(){
     autoMove = !autoMove;
 }
@@ -36,18 +31,20 @@ function bordersToggle(){
 function selfDestructToggle(){
     selfDestruct = !selfDestruct;
 }
-//
+function reverseToggle(){
+    reverse = !reverse;
+}
 
 //Таблица рекордов
 let hiScore = [100000, 90000, 80000, 70000, 60000, 50000, 40000, 30000, 20000, 10000];
 
 //Выдача очков в зависимости от сложности
 function getScore(){
-    if(autoMove && borders && selfDestruct){
+    if(autoMove && borders && selfDestruct && !reverse){
         return 100 * (level+1);
     } else if(!autoMove && !borders && !selfDestruct){
         return 20 * (level+1);
-    } else if (autoMove || borders || selfDestruct) {
+    } else if (autoMove || borders || selfDestruct || reverse) {
         return 40 * (level+1);
     }
 }
@@ -63,6 +60,7 @@ function hiScoreDraw() {
     }
 }
 
+//Сохранение рекордов
 function hiScoreSave(){
     let pos = 10;
     for (let i = 0; i < hiScore.length; i++){
@@ -81,13 +79,15 @@ function hiScoreSave(){
     hiScoreDraw();
 }
 
+//Обновление счетчика очков
 function drawScore() {
     for (let i = 0; i < hiScore.length; i++){
         if(score > hiScore[i]){
             info.style.color = '#f00';
+            message.innerText = 'You got a HI-Score!!!';
+            message.className = 'message';
         }
     }
-
     info.innerText = score;
     infoSize.innerText = snake.unitSize;
 }
@@ -210,7 +210,6 @@ function colCheck(){
     if((x < 0 || x > 19 || y < 0 || y > 19) && borders) {
         gameOver();
     }
-
     //Телепорт сквозь рамки
     else if (x < 0){
         x = 19;
@@ -221,7 +220,6 @@ function colCheck(){
     } else if (y > 19){
         y = 0;
     }
-    
     //Проверка на предмет
     else if(items[x][y] == 1){
         addItem();
@@ -232,7 +230,6 @@ function colCheck(){
         score += getScore();
         drawScore();
     }
-
     //Проверка на бонус
     else if (items[x][y] == 2){
         items[x][y] = 0;
@@ -270,7 +267,6 @@ function gameOver() {
 //Рестарт, сброс параметров на начальное значение
 function restart() {
     if(!editor){
-        
         mapDraw();
         mapLoader();
         x = 9;
@@ -289,28 +285,17 @@ function restart() {
         infoLvl.innerText = level;
         //direction = 'ArrowUp';
         rAF = null;
-    
         snake.unitCellX = [];
         snake.unitCellY = [];
         snake.unitCellX.push(x);
         snake.unitCellY.push(y);
-    
         initItems();
-        
-        
         hiScoreDraw()
         addItem();
         drawField();
     }
 }
 
-/*
-//Рост змеи при поглощении предмета
-function unitGrowUp() { //TODO: Вынесено в класс
-    unitCellX.push(x);
-    unitCellY.push(y);
-}
-*/
 //Повышение уровня сложности, проверка на победу
 function lvlUp() {
     if((snake.unitSize) % 10 == 0) {
@@ -322,53 +307,7 @@ function lvlUp() {
         document.getElementById("game_over").innerText = 'YOU WON!!!';
     }
 }
-/*
-//Отрисовка змеи
-function initUnit() { //TODO: Вынесено в класс
-    for(let i = unitSize-1; i >= 0; i--){
-        let tmpX = unitCellX[i];
-        let tmpY = unitCellY[i];
-        field[tmpX][tmpY].className = "unit";
 
-        if(i == 0){
-            field[tmpX][tmpY].className = "unit__head";
-        }
-    }
-}
-
-//Передвижение змеи
-function move(event){ //TODO: Вынесено в класс
-    if(fail == false){
-        /*
-        if((event == 'ArrowUp' && direction == 'ArrowDown')||
-            (event == 'ArrowDown' && direction == 'ArrowUp')||
-            (event == 'ArrowRight' && direction == 'ArrowLeft')||
-            (event == 'ArrowLeft' && direction == 'ArrowRight')
-        ){
-            unitReverse();
-        }
-        
-        switch(event){
-            case 'ArrowUp': --x;    direction = event;
-            break;
-            case 'ArrowDown': ++x;  direction = event;
-            break;
-            case 'ArrowRight': ++y; direction = event;
-            break;
-            case 'ArrowLeft': --y;  direction = event;
-            break;
-            default: return;
-        }
-        count = 0;
-        colCheck();
-        unitCellX.unshift(x);
-        unitCellY.unshift(y);
-        unitCellX.pop();
-        unitCellY.pop();
-        drawField();
-    }
-}
-*/
 //Рандомное целое число
 function getRandomInt(min, max) {
     min = Math.ceil(min);
@@ -410,7 +349,7 @@ function pause() {
     }
 }
 
-//Загрузка карты
+//Отрисовка карты
 function mapDraw() {
     let map = maps['stage' + stage];
     if(map){
@@ -426,68 +365,7 @@ function mapDraw() {
     }
 }
 
-//Редактор уровней
-let editMap = [20];
-function runEditor(){
-    let tempMap = [20];
-    editor = !editor;
-    if(editor){
-        document.getElementById('save').className = 'button';
-        document.getElementById('delete').className = 'button';
-        first.addEventListener("click", addBlock);
-        let map = maps['stage' + stage];
-        for(let i = 0; i < 20; i++) {
-            for(let j = 0; j < 20; j++){
-                if(map[i][j] == 1){
-                    field[i][j].className = 'block_edit';
-                } else {
-                    field[i][j].className = 'editor';
-                }
-            }
-        }
-        for(let i = 0; i < 20; i++) {
-            tempMap[i] = [20];
-        }
-        for(let i = 0; i < 20; i++) {
-            for(let j = 0; j < 20; j++){
-                tempMap[i][j] = 0;
-            }
-        }
-        editMap = tempMap;
-    } else if (!editor){
-        document.getElementById('save').className = 'hidden_btn';
-        document.getElementById('delete').className = 'hidden_btn';
-        first.removeEventListener("click", addBlock);
-        restart();
-    }
-}
-
-function addBlock(event){
-    id = event.target.id;
-    if(document.getElementById(id).className == 'editor'){
-        document.getElementById(id).className = 'block_edit';
-    } else if (document.getElementById(id).className == 'block_edit'){
-        document.getElementById(id).className = 'editor';
-    }
-}
-
-function saveMap(){
-    for(let i = 0; i < 20; i++) {
-        for(let j = 0; j < 20; j++){
-            if(field[i][j].className == 'block_edit'){
-                editMap[i][j] = 1;
-            }
-        }
-    }
-    let num = 0;
-    for(max in maps){
-        num++;
-    }
-    maps['stage' + num] = editMap;
-    mapLoader();
-    runEditor();
-}
-
+//Переключение текущего уровня
 function setStage(){
     e = document.getElementById("stage");
     stage = e.value;
@@ -506,20 +384,7 @@ function setStage(){
     }
 }
 
-function deleteMap() {
-    if (stage != 0){
-        message.innerText = `Stage ${stage} deleted!`;
-        message.className = 'message';
-        delete maps['stage' + stage];
-        stage = 0;
-        runEditor();
-        restart();
-    } else {
-        message.innerText = "Stage 1 can't be deleted!";
-        message.className = 'message';
-    }
-}
-
+//Загрузчик карты
 function mapLoader() {
     document.getElementById("stage").innerHTML = '';
     let num = 0;
@@ -532,13 +397,3 @@ function mapLoader() {
         num++;
     }
 }
-/*
-function unitReverse() { //TODO: Вынесено в класс
-    //Помещаем в x и y последние элемента массивов Cell
-    x = unitCellX[unitCellX.length-1];
-    y = unitCellY[unitCellY.length-1];
-    //Разворачиваем массивы
-    unitCellX.reverse();
-    unitCellY.reverse();
-}
-*/
