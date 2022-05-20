@@ -300,7 +300,7 @@ function restart() {
 }
 
 //Рост змеи при поглощении предмета
-function unitGrowUp() {
+function unitGrowUp() { //TODO: Вынесено в класс
     unitCellX.push(x);
     unitCellY.push(y);
 }
@@ -318,7 +318,7 @@ function lvlUp() {
 }
 
 //Отрисовка змеи
-function initUnit() {
+function initUnit() { //TODO: Вынесено в класс
     for(let i = unitSize-1; i >= 0; i--){
         let tmpX = unitCellX[i];
         let tmpY = unitCellY[i];
@@ -331,8 +331,17 @@ function initUnit() {
 }
 
 //Передвижение змеи
-function move(event){
+function move(event){ //TODO: Вынесено в класс
     if(fail == false){
+        /*
+        if((event == 'ArrowUp' && direction == 'ArrowDown')||
+            (event == 'ArrowDown' && direction == 'ArrowUp')||
+            (event == 'ArrowRight' && direction == 'ArrowLeft')||
+            (event == 'ArrowLeft' && direction == 'ArrowRight')
+        ){
+            unitReverse();
+        }
+        */
         switch(event){
             case 'ArrowUp': --x;    direction = event;
             break;
@@ -454,7 +463,6 @@ function addBlock(event){
     } else if (document.getElementById(id).className == 'block_edit'){
         document.getElementById(id).className = 'editor';
     }
-    
 }
 
 function saveMap(){
@@ -516,5 +524,100 @@ function mapLoader() {
         opt.innerText = num+1;
         document.getElementById("stage").appendChild(opt);
         num++;
+    }
+}
+
+function unitReverse() { //TODO: Вынесено в класс
+    //Помещаем в x и y последние элемента массивов Cell
+    x = unitCellX[unitCellX.length-1];
+    y = unitCellY[unitCellY.length-1];
+    //Разворачиваем массивы
+    unitCellX.reverse();
+    unitCellY.reverse();
+}
+
+//Отдельный класс для змеюки
+class Snake {
+    constructor() {
+        this.x = 9;  //Начальная координата игрока
+        this.y = 9;  //Начальная координата игрока
+        this.unitCellX = []; //Хранилище координат X для отображения всей длины змеи
+        this.unitCellY = []; //Хранилище координат Y для отображения всей длины змеи
+
+        unitCellX.push(x); //Добавляем первую ячейку в хранилище змеи
+        unitCellY.push(y); //Добавляем первую ячейку в хранилище змеи
+        this.orientation = [];
+        this.orientation.push('U');
+        this.unitSize = 1;
+    }
+
+    unitReverse() {
+        //Помещаем в x и y последние элемента массивов Cell
+        this.x = unitCellX[unitCellX.length-1];
+        this.y = unitCellY[unitCellY.length-1];
+        //Разворачиваем массивы
+        this.unitCellX.reverse();
+        this.unitCellY.reverse();
+    }
+
+    move(event){
+        if(fail == false){
+            /*
+            if((event == 'ArrowUp' && direction == 'ArrowDown')||
+                (event == 'ArrowDown' && direction == 'ArrowUp')||
+                (event == 'ArrowRight' && direction == 'ArrowLeft')||
+                (event == 'ArrowLeft' && direction == 'ArrowRight')
+            ){
+                unitReverse();
+            }
+            */
+            switch(event){
+                case 'ArrowUp': --x;    direction = event;
+                break;
+                case 'ArrowDown': ++x;  direction = event;
+                break;
+                case 'ArrowRight': ++y; direction = event;
+                break;
+                case 'ArrowLeft': --y;  direction = event;
+                break;
+                default: return;
+            }
+            count = 0;
+            colCheck();
+            this.unitCellX.unshift(x);
+            this.unitCellY.unshift(y);
+            this.unitCellX.pop();
+            this.unitCellY.pop();
+            drawField();
+        }
+    }
+
+    //Отрисовка змеи
+    initUnit() {
+        for(let i = this.unitSize-1; i >= 0; i--){
+            let tmpX = this.unitCellX[i];
+            let tmpY = this.unitCellY[i];
+            field[tmpX][tmpY].className = "unit";
+
+            if(i == 0){
+                field[tmpX][tmpY].className = "unit__head";
+            }
+        }
+    }
+
+    //Рост змеи при поглощении предмета
+    unitGrowUp() {
+        this.unitCellX.push(x);
+        this.unitCellY.push(y);
+        switch(direction) {
+            case 'ArrowUp': this.orientation = 'U';
+                break;
+                case 'ArrowDown': this.orientation = 'D';
+                break;
+                case 'ArrowRight': this.orientation = 'R';
+                break;
+                case 'ArrowLeft': this.orientation = 'L';
+                break;
+        }
     }
 }
