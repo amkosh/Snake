@@ -31,6 +31,20 @@ body {
     height: 20px;
 }
 
+.grass {
+    background-color: #0a0;
+    width: 20px;
+    height: 20px;
+    border: dashed 1px #0a0;
+}
+
+.grass_edit {
+    background-color: #0a0;
+    width: 20px;
+    height: 20px;
+    border: dashed 1px rgb(143, 217, 252);
+}
+
 .editor {
     background-color: rgb(0, 120, 189);
     border: dashed 1px rgb(143, 217, 252);

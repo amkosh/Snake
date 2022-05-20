@@ -10,6 +10,15 @@ function runEditor(){
         let map = maps['stage' + stage];
         for(let i = 0; i < 20; i++) {
             for(let j = 0; j < 20; j++){
+
+                switch(map[i][j]){
+                    case 1: field[i][j].className = 'block_edit';
+                    break;
+                    case 2: field[i][j].className = 'grass_edit';
+                    break;
+                    case 0: field[i][j].className = 'editor';
+                    break;
+                }
                 if(map[i][j] == 1){
                     field[i][j].className = 'block_edit';
                 } else {
@@ -40,6 +49,8 @@ function addBlock(event){
     if(document.getElementById(id).className == 'editor'){
         document.getElementById(id).className = 'block_edit';
     } else if (document.getElementById(id).className == 'block_edit'){
+        document.getElementById(id).className = 'grass_edit';
+    } else if (document.getElementById(id).className == 'grass_edit'){
         document.getElementById(id).className = 'editor';
     }
 }
@@ -50,6 +61,8 @@ function saveMap(){
         for(let j = 0; j < 20; j++){
             if(field[i][j].className == 'block_edit'){
                 editMap[i][j] = 1;
+            } else if (field[i][j].className == 'grass_edit'){
+                editMap[i][j] = 2;
             }
         }
     }

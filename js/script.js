@@ -186,6 +186,7 @@ function initField(){
 //Отрисовка текущего состояния поля
 function drawField(){
     if(!fail && !editor){
+        mapDraw();
         for(let i = 0; i < 20; i++) {
             for(let j = 0; j < 20; j++){
                 if(items[i][j] != 0){
@@ -195,8 +196,6 @@ function drawField(){
                         case 2: field[i][j].className = "bonus__item";
                         break;
                     }
-                } else if (field[i][j].className != 'block') {
-                    field[i][j].className = "field";
                 }
             }
         }
@@ -357,6 +356,8 @@ function mapDraw() {
             for(let j = 0; j < 20; j++){
                 if(map[i][j] == 1){
                     field[i][j].className = 'block';
+                } else if(map[i][j] == 2){
+                    field[i][j].className = 'grass';
                 } else {
                     field[i][j].className = 'field';
                 }
