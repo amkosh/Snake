@@ -26,14 +26,14 @@ class Snake {
         x = this.unitCellX[0];
         y = this.unitCellY[0];
         this.orientation.reverse();
-        switch(this.orientation[0]){
-            case 'U': direction = 'ArrowDown';
+        switch(this.orientation[0]){    //TODO: Отказаться от direction
+            case 'ArrowUp': direction = 'ArrowDown';
             break;
-            case 'D': direction = 'ArrowUp';
+            case 'ArrowDown': direction = 'ArrowUp';
             break;
-            case 'R': direction = 'ArrowLeft';
+            case 'ArrowRight': direction = 'ArrowLeft';
             break;
-            case 'L': direction = 'ArrowRight';
+            case 'ArrowLeft': direction = 'ArrowRight';
             break;
         }
     }
@@ -89,7 +89,27 @@ class Snake {
 
     move(event){
         if(!fail){
+            this.orientation.unshift(event);
 
+            switch(this.orientation[0]){
+                case 'ArrowUp': --x; //this.orientation.unshift('ArrowUp');
+                break;
+                case 'ArrowDown': ++x; //this.orientation.unshift('ArrowDown');
+                break;
+                case 'ArrowRight': ++y; //this.orientation.unshift('ArrowRight');
+                break;
+                case 'ArrowLeft': --y; //this.orientation.unshift('ArrowLeft');
+                break;
+                default: return;
+            }
+            count = 0;
+            colCheck();
+            this.unitCellX.unshift(x);
+            this.unitCellY.unshift(y);
+            this.unitCellX.pop();
+            this.unitCellY.pop();
+            this.orientation.pop();
+            drawField();
         }
     }
 
@@ -111,14 +131,14 @@ class Snake {
     unitGrowUp() {
         this.unitCellX.push(x);
         this.unitCellY.push(y);
-        switch(direction) {
-            case 'ArrowUp': this.orientation.push('U');
+        switch(this.orientation[0]) {
+                case 'ArrowUp': this.orientation.push('ArrowUp');
                 break;
-                case 'ArrowDown': this.orientation.push('S');
+                case 'ArrowDown': this.orientation.push('ArrowDown');
                 break;
-                case 'ArrowRight': this.orientation.push('R');
+                case 'ArrowRight': this.orientation.push('ArrowRight');
                 break;
-                case 'ArrowLeft': this.orientation.push('L');
+                case 'ArrowLeft': this.orientation.push('ArrowLeft');
                 break;
         }
     }

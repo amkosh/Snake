@@ -18,7 +18,7 @@ let fail = false;   //Gameover
 let isPause = false;    //Pause
 let editor = false;
 
-let direction = 'ArrowUp';  //Начальная ориентация змеи
+//let direction = 'ArrowUp';  //Начальная ориентация змеи
 let speed = 20; //Число кадров перед обновлением
 let level = 0;  //Начальный уровень
 
@@ -287,7 +287,7 @@ function restart() {
         document.getElementById("game_over").className = '';
         message.className = 'hidden_btn';
         infoLvl.innerText = level;
-        direction = 'ArrowUp';
+        //direction = 'ArrowUp';
         rAF = null;
     
         snake.unitCellX = [];
@@ -383,7 +383,7 @@ function loop() {
     // фигура сдвигается вниз каждые 35 кадров
     if (++count > speed && autoMove) {
 		//Движение змеи
-        snake.move(direction);
+        snake.move(snake.orientation[0]);
       count = 0;
     }
     if(bonusTimer == 0){
