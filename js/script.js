@@ -14,6 +14,12 @@ let isPause = false;    //Pause
 let editor = false; //Запущенный редактор
 let speed = 20; //Число кадров перед обновлением
 let level = 0;  //Начальный уровень
+let portal = false;
+let lives = 2;
+let liveScore = 50000;
+let gotHiScore = false;
+let lvlGrow = 10;
+let goal = stageParams['stage' + stage][0];
 
 //Параметры (читы)
 let autoMove = true;
@@ -82,14 +88,25 @@ function hiScoreSave(){
 //Обновление счетчика очков
 function drawScore() {
     for (let i = 0; i < hiScore.length; i++){
-        if(score > hiScore[i]){
+        if(score > hiScore[i] && !gotHiScore){
             info.style.color = '#f00';
             message.innerText = 'You got a HI-Score!!!';
             message.className = 'message';
+            gotHiScore = true;
         }
     }
+    if(score > liveScore){
+        lives++;
+        liveScore+= 50000;
+        message.innerText = '1UP !!!';
+        message.className = 'message';
+        document.getElementById("lives").innerText = lives;
+    }
     info.innerText = score;
-    infoSize.innerText = snake.unitSize;
+    if(!portal){
+        infoSize.innerText = goal - snake.unitSize;
+    }
+    
 }
 
 // следим за кадрами анимации, чтобы если что — остановить игру
@@ -142,11 +159,11 @@ function initItems() {
 function addItem() {
     let a = getRandomInt(0, 19);
     let b = getRandomInt(0, 19);
-    while(field[a][b].className != "field"){
+    while(field[a][b].className != "field" || field[a][b].className == "grass"){
         a = getRandomInt(0, 19);
         b = getRandomInt(0, 19);
     }
-    items[a][b] = 1;
+    items[a][b] = 1; //1: snack
     drawField();
 }
 
@@ -159,7 +176,7 @@ function addBonusItem() {
             a = getRandomInt(0, 19);
             b = getRandomInt(0, 19);
         }
-        items[a][b] = 2;
+        items[a][b] = 2; //2: bonus
         bonusX = a;
         bonusY = b;
         bonusTimer = 150;
@@ -168,6 +185,17 @@ function addBonusItem() {
     if(bonusTimer == 0){
         items[bonusX][bonusY] = 0;
     }
+}
+
+//Добавления портала выхода на следующий уровень
+function addPortal(){
+    let a = getRandomInt(0, 19);
+    let b = getRandomInt(0, 19);
+    while(field[a][b].className != "field"){
+        a = getRandomInt(0, 19);
+        b = getRandomInt(0, 19);
+    }
+    items[a][b] = 3; //3: portal
 }
 
 //Заполнение массива div'ами и их размещение на странице
@@ -186,6 +214,7 @@ function initField(){
 //Отрисовка текущего состояния поля
 function drawField(){
     if(!fail && !editor){
+        mapDraw();
         for(let i = 0; i < 20; i++) {
             for(let j = 0; j < 20; j++){
                 if(items[i][j] != 0){
@@ -194,9 +223,9 @@ function drawField(){
                         break;
                         case 2: field[i][j].className = "bonus__item";
                         break;
+                        case 3: field[i][j].className = "portal";
+                        break;
                     }
-                } else if (field[i][j].className != 'block') {
-                    field[i][j].className = "field";
                 }
             }
         }
@@ -236,6 +265,10 @@ function colCheck(){
         score += 5000;
         drawScore();
     }
+    //Проверка на портал
+    else if (items[x][y] == 3){
+        nextStage();
+    }
 
     //Проверка на змею
     else if (field[x][y].className == "unit" && selfDestruct) {
@@ -243,52 +276,91 @@ function colCheck(){
     }
 
     //Проверка на блоки
-    else if (field[x][y].className == "block" && borders) {
+    else if (field[x][y].className == "block") {
         gameOver();
     }
 }
 
 //Остановка игры при проигрыше
 function gameOver() {
-    hiScoreSave();
-    for(let i = 0; i < snake.unitSize; i++){
-        let tmpX = snake.unitCellX[i];
-        let tmpY = snake.unitCellY[i];
-        field[tmpX][tmpY].className = "dead";
+    lives--;
+    if(lives < 0){
+        hiScoreSave();
+        for(let i = 0; i < snake.unitSize; i++){
+            let tmpX = snake.unitCellX[i];
+            let tmpY = snake.unitCellY[i];
+            field[tmpX][tmpY].className = "dead";
+        }
+        fail = true;
+        document.getElementById("game_over").innerText = 'GAME OVER!';
+        document.getElementById("game_over").className = 'gameover';
+        message.innerText = 'Press RESTART for another try!'
+        message.className = 'message'
+        cancelAnimationFrame(rAF);
+    } else {
+        for(let i = 0; i < snake.unitSize; i++){
+            let tmpX = snake.unitCellX[i];
+            let tmpY = snake.unitCellY[i];
+            field[tmpX][tmpY].className = "dead";
+        }
+        
+        x = 9;
+        y = 9;
+        snake = new Snake();
+        if(isPause){
+            pause();
+        }
+        fail = false;
+        unitSize = 1;
+        info.style.color = '#fff';
+        drawScore();
+        level = 0;
+        paramsLoad();
+        document.getElementById("game_over").innerText = '';
+        document.getElementById("game_over").className = '';
+        document.getElementById("lives").innerText = lives;
+        message.className = 'hidden_btn';
+        if(lives == 0){
+            message.innerText = "Last chance!"
+            message.className = 'message';
+        }
+        infoLvl.innerText = level;
+        rAF = null;
+        initItems();
+        hiScoreDraw()
+        cancelAnimationFrame(rAF);
+        addItem();
     }
-    fail = true;
-    document.getElementById("game_over").innerText = 'GAME OVER!';
-    document.getElementById("game_over").className = 'gameover';
-    message.innerText = 'Press RESTART for another try!'
-    message.className = 'message'
-    cancelAnimationFrame(rAF);
 }
 
 //Рестарт, сброс параметров на начальное значение
 function restart() {
     if(!editor){
+        lives = 2;
+        document.getElementById("lives").innerText = lives;
+        portal = false;
         mapDraw();
         mapLoader();
         x = 9;
         y = 9;
-        isPause = false;
+        snake = new Snake();
+        if(isPause){
+            pause();
+        }
         fail = false;
         unitSize = 1;
         score = 0;
         info.style.color = '#fff';
         drawScore();
         level = 0;
-        speed = 15;
+        paramsLoad();
         document.getElementById("game_over").innerText = '';
         document.getElementById("game_over").className = '';
-        message.className = 'hidden_btn';
+        message.innerText = stageName['stage' + stage];
+        message.className = 'message';
         infoLvl.innerText = level;
-        //direction = 'ArrowUp';
         rAF = null;
-        snake.unitCellX = [];
-        snake.unitCellY = [];
-        snake.unitCellX.push(x);
-        snake.unitCellY.push(y);
+
         initItems();
         hiScoreDraw()
         addItem();
@@ -298,13 +370,19 @@ function restart() {
 
 //Повышение уровня сложности, проверка на победу
 function lvlUp() {
-    if((snake.unitSize) % 10 == 0) {
+    if((snake.unitSize) % lvlGrow == 0) {
         speed--;
         level++;
         infoLvl.innerText = level;
     }
-    if(snake.unitSize >= 100){
-        document.getElementById("game_over").innerText = 'YOU WON!!!';
+    if(snake.unitSize >= goal){
+        document.getElementById("game_over").innerText = 'STAGE COMPLETE!';
+        message.innerText = 'Go to the portal!'
+        message.className = 'message';
+        if(!portal){
+            addPortal();
+            portal = true;
+        }
     }
 }
 
@@ -357,6 +435,8 @@ function mapDraw() {
             for(let j = 0; j < 20; j++){
                 if(map[i][j] == 1){
                     field[i][j].className = 'block';
+                } else if(map[i][j] == 2){
+                    field[i][j].className = 'grass';
                 } else {
                     field[i][j].className = 'field';
                 }
@@ -369,15 +449,19 @@ function mapDraw() {
 function setStage(){
     e = document.getElementById("stage");
     stage = e.value;
+    paramsLoad();
     restart();
     if(editor){
         let map = maps['stage' + stage];
         for(let i = 0; i < 20; i++) {
             for(let j = 0; j < 20; j++){
-                if(map[i][j] == 1){
-                    field[i][j].className = 'block_edit';
-                } else {
-                    field[i][j].className = 'editor';
+                switch(map[i][j]){
+                    case 1: field[i][j].className = 'block_edit';
+                    break;
+                    case 2: field[i][j].className = 'grass_edit';
+                    break;
+                    case 0: field[i][j].className = 'editor';
+                    break;
                 }
             }
         }
@@ -396,4 +480,38 @@ function mapLoader() {
         document.getElementById("stage").appendChild(opt);
         num++;
     }
+}
+
+//Переход на следующий уровень
+function nextStage(){
+    stage++;
+    if(isPause){
+        pause();
+    }
+    snake = new Snake();
+    portal = false;
+    mapDraw();
+    mapLoader();
+    x = 9;
+    y = 9;
+    fail = false;
+    unitSize = 1;
+    info.style.color = '#fff';
+    drawScore();
+    level = 0;
+    paramsLoad();
+    document.getElementById("game_over").innerText = '';
+    document.getElementById("game_over").className = '';
+    message.innerText = stageName['stage' + stage];
+    message.className = 'message';
+    infoLvl.innerText = level;
+    rAF = null;
+    snake.unitCellX = [];
+    snake.unitCellY = [];
+    snake.unitCellX.push(x);
+    snake.unitCellY.push(y);
+    initItems();
+    hiScoreDraw()
+    drawField();
+    addItem();
 }

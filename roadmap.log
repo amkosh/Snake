@@ -1,0 +1,41 @@
+***ToDo***
+//feature 0.0.5//
+    ++campaign (ten stages)
+        ++level change after size = 100;
+        ++portal to next level
+        ++lives (3/game) + bonus life after gathering 50000 points
+    ++addGrass
+\\---
+
+//feature 0.0.6//
++twin snakes
+\\---
+
+//feature 0.0.7//
++achievments:
+ +uroboros
+ +four dimensions
+ +speed of light (speed == 0)
+ +konami code
+\\---
+
+//feature 0.0.8//
++add phone support
+\\---
+
+//feature 0.0.//
+\\---
+
+
+***Done***
+//release 0.1.0//
+    //feature 0.0.4//
+        ++bonus item (5000 points)
+        ++blocks on field
+        ++reverse
+        ++levels
+        ++levelEditor
+        ++editor load map
+        ++deleteMap
+        ++new class Snake
+    \\---
