@@ -85,6 +85,20 @@ body {
     border: solid 1px #0f0;
 }
 
+.unit__foe {
+    background-color: rgb(170, 0, 0);
+    width: 20px;
+    height: 20px;
+    border: dashed 1px rgb(170, 0, 0);
+}
+
+.unit__foe__head {
+    background-color: rgb(255, 0, 0);
+    width: 20px;
+    height: 20px;
+    border: solid 1px rgb(255, 0, 0);
+}
+
 .field {
     background-color: #000;
     transition: background-color 0.2s ease-in;
