@@ -476,7 +476,7 @@ function mapLoader() {
         let opt = document.createElement('option');
         opt.value = num;
         opt.id = num;
-        opt.innerText = num+1;
+        opt.innerText = 'Stage ' + (num+1);
         document.getElementById("stage").appendChild(opt);
         num++;
     }

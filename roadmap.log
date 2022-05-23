@@ -1,12 +1,4 @@
 ***ToDo***
-//feature 0.0.5//
-    ++campaign (ten stages)
-        ++level change after size = 100;
-        ++portal to next level
-        ++lives (3/game) + bonus life after gathering 50000 points
-    ++addGrass
-\\---
-
 //feature 0.0.6//
 +twin snakes
 \\---
@@ -23,12 +15,25 @@
 +add phone support
 \\---
 
+//feature 0.0.9//
++grass eat bonus
++wall breaker bonus
+\\---
+
 //feature 0.0.//
 \\---
 
 
 ***Done***
 //release 0.1.0//
+    //feature 0.0.5//
+        ++campaign (ten stages)
+            ++level change after collected set items;
+            ++portal to next level
+            ++lives (3/game) + bonus life after gathering 50000 points
+            ++stageParams
+        ++addGrass
+    \\---
     //feature 0.0.4//
         ++bonus item (5000 points)
         ++blocks on field
