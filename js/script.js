@@ -18,6 +18,8 @@ let portal = false;
 let lives = 2;
 let liveScore = 50000;
 let gotHiScore = false;
+let lvlGrow = 10;
+let goal = stageParams['stage' + stage][0];
 
 //Параметры (читы)
 let autoMove = true;
@@ -101,7 +103,10 @@ function drawScore() {
         document.getElementById("lives").innerText = lives;
     }
     info.innerText = score;
-    infoSize.innerText = snake.unitSize;
+    if(!portal){
+        infoSize.innerText = goal - snake.unitSize;
+    }
+    
 }
 
 // следим за кадрами анимации, чтобы если что — остановить игру
@@ -271,7 +276,7 @@ function colCheck(){
     }
 
     //Проверка на блоки
-    else if (field[x][y].className == "block" && borders) {
+    else if (field[x][y].className == "block") {
         gameOver();
     }
 }
@@ -310,7 +315,7 @@ function gameOver() {
         info.style.color = '#fff';
         drawScore();
         level = 0;
-        speed = 15;
+        paramsLoad();
         document.getElementById("game_over").innerText = '';
         document.getElementById("game_over").className = '';
         document.getElementById("lives").innerText = lives;
@@ -348,7 +353,7 @@ function restart() {
         info.style.color = '#fff';
         drawScore();
         level = 0;
-        speed = 15;
+        paramsLoad();
         document.getElementById("game_over").innerText = '';
         document.getElementById("game_over").className = '';
         message.innerText = stageName['stage' + stage];
@@ -365,12 +370,12 @@ function restart() {
 
 //Повышение уровня сложности, проверка на победу
 function lvlUp() {
-    if((snake.unitSize) % 10 == 0) {
+    if((snake.unitSize) % lvlGrow == 0) {
         speed--;
         level++;
         infoLvl.innerText = level;
     }
-    if(snake.unitSize >= 10){
+    if(snake.unitSize >= goal){
         document.getElementById("game_over").innerText = 'STAGE COMPLETE!';
         message.innerText = 'Go to the portal!'
         message.className = 'message';
@@ -444,6 +449,7 @@ function mapDraw() {
 function setStage(){
     e = document.getElementById("stage");
     stage = e.value;
+    paramsLoad();
     restart();
     if(editor){
         let map = maps['stage' + stage];
@@ -493,7 +499,7 @@ function nextStage(){
     info.style.color = '#fff';
     drawScore();
     level = 0;
-    speed = 15;
+    paramsLoad();
     document.getElementById("game_over").innerText = '';
     document.getElementById("game_over").className = '';
     message.innerText = stageName['stage' + stage];

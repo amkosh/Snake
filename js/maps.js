@@ -231,11 +231,28 @@ const stageName = {
     stage6: "Stage 7: Long Snake Moan", //Длина 200, минимум препятствий
     stage7: "Stage 8: Worm tamer", //Сплошь колонны по всему полю
     stage8: "Stage 9: Round and Round", //Лабиринт 50 кубиков
-    stage9: "Stage 10: There is an End", //
+    stage9: "Stage 10: There is an End", //Переход сквозь стену
 }
 
 const stageParams = {
-    stage0: []
+    stage0: [101, 20, true, 10],
+    stage1: [76, 18, true, 7],
+    stage2: [81, 24, true, 8],
+    stage3: [71, 24, true, 7],
+    stage4: [101, 4, false, 15],
+    stage5: [61, 20, true, 6],
+    stage6: [201, 26, true, 15],
+    stage7: [61, 26, true, 6],
+    stage8: [51, 22, true, 10],
+    stage9: [101, 20, false, 10]
+}
+
+function paramsLoad(){
+    goal = stageParams['stage' + stage][0];
+    speed = stageParams['stage' + stage][1];
+    borders = stageParams['stage' + stage][2];
+    lvlGrow = stageParams['stage' + stage][3];
+    drawScore();
 }
 
 const stageInfo = {
