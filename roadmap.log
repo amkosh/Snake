@@ -1,9 +1,9 @@
 ***ToDo***
 //feature 0.0.5//
 +campaign (ten stages)
-    +level change after size = 100;
-        +portal to next level
-    +lives (3/game) + bonus life after gathering 50000 points
+        ++level change after size = 100;
+        ++portal to next level
+        ++lives (3/game) + bonus life after gathering 50000 points
     ++addGrass
 \\---
 

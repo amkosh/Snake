@@ -71,6 +71,7 @@ function saveMap(){
         num++;
     }
     maps['stage' + num] = editMap;
+    stageName['stage' + num] = 'Custom Map';
     mapLoader();
     runEditor();
 }
