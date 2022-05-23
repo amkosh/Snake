@@ -7,8 +7,6 @@ let message = document.getElementById('message'); //Для вывода инфо
 let field = [20];   //Создаем массив для игрового поля (количество рядов)
 let items = [20];   //Создаем массив для предметов (той же величины, что и поле)
 let score = 0;  //Счетчик очков
-let x = 9;  //Начальная координата игрока
-let y = 9;  //Начальная координата игрока
 let fail = false;   //Gameover
 let isPause = false;    //Pause
 let editor = false; //Запущенный редактор
@@ -22,8 +20,6 @@ let lvlGrow = 10;
 let goal = stageParams['stage' + stage][0];
 
 //Twin Snake
-let xP2 = 15;
-let yP2 = 15;
 let player2 = true;
 
 //Параметры (читы)
@@ -109,8 +105,12 @@ function drawScore() {
     }
     info.innerText = score;
     if(!portal){
-        //infoSize.innerText = goal - snake.unitSize; TODO: snake
-        infoSize.innerText = goal - snake2.unitSize;
+        if(player2){
+            infoSize.innerText = goal+1 - (snake.unitSize + snake2.unitSize);
+        } else {
+            infoSize.innerText = goal+1 - snake.unitSize;
+        }
+        
     }
     
 }
@@ -118,7 +118,7 @@ function drawScore() {
 // следим за кадрами анимации, чтобы если что — остановить игру
 let rAF = null;
 //Счетчик кадров
-let count = 0;
+//let count = 0;
 //Таймер бонуса
 let bonusTimer = 0;
 let bonusX = 0;
@@ -136,8 +136,12 @@ for(let i = 0; i < 20; i++) {
     items[i] = [20];
 }
 
-//let snake = new Snake(); //TODO: snake
-let snake2 = new SolidSnake();
+/*
+let snake = new Snake();
+if(player2){
+    let snake2 = new SolidSnake();
+}
+*/
 
 initField();    //Заполнение поля div'ами
 restart();  //Старт
@@ -240,7 +244,7 @@ function drawField(){
                 }
             }
         }
-        //snake.initUnit(); TODO: snake
+        snake.initUnit();
         if(player2){
             snake2.initUnit();
         }
@@ -284,7 +288,12 @@ function colCheck(player){
         nextStage();
     }
 
-    //Проверка на змею
+    //Проверка на себя
+    else if (field[player.x][player.y].className == "unit" && selfDestruct) {
+        gameOver(player);
+    }
+
+    //Проверка на второго игрока
     else if (field[player.x][player.y].className == "unit__foe" && selfDestruct) {
         gameOver(player);
     }
@@ -319,12 +328,12 @@ function gameOver(player) {
             field[tmpX][tmpY].className = "dead";
         }
         
-        x = 9;
-        y = 9;
-        xP2 = 15;
-        yP2 = 15;
-        //snake = new Snake(); TODO: snake
-        snake2 = new SolidSnake();
+        snake = new Snake();
+        if(player2){
+            snake2 = new SolidSnake();
+        }
+        paramsLoad();
+        
         if(isPause){
             pause();
         }
@@ -333,7 +342,7 @@ function gameOver(player) {
         info.style.color = '#fff';
         drawScore();
         level = 0;
-        paramsLoad();
+        
         document.getElementById("game_over").innerText = '';
         document.getElementById("game_over").className = '';
         document.getElementById("lives").innerText = lives;
@@ -357,11 +366,14 @@ function restart() {
         lives = 2;
         document.getElementById("lives").innerText = lives;
         portal = false;
-        mapDraw();
+        
         mapLoader();
-        x = 9;
-        y = 9;
-        //snake = new Snake(); TODO: snake
+        snake = new Snake();
+        if(player2){
+            snake2 = new SolidSnake();
+        }
+        paramsLoad();
+        mapDraw();
         if(isPause){
             pause();
         }
@@ -371,7 +383,7 @@ function restart() {
         info.style.color = '#fff';
         drawScore();
         level = 0;
-        paramsLoad();
+        
         document.getElementById("game_over").innerText = '';
         document.getElementById("game_over").className = '';
         message.innerText = stageName['stage' + stage];
@@ -416,13 +428,14 @@ function loop() {
     // начинаем анимацию
     rAF = requestAnimationFrame(loop);
     // фигура сдвигается вниз каждые 35 кадров
-    if (++count > speed && autoMove) {
+    if (++snake.count > speed && autoMove) {
 		//Движение змеи
-        //snake.move(snake.orientation[0]); TODO: snake
-        if(player2){
-            snake2.move(snake2.orientation[0]);
-        }
-      count = 0;
+        snake.move(snake.orientation[0]);
+        snake.count = 0; 
+    }
+    if(player2 && (++snake2.count > speed && autoMove)){
+        snake2.move(snake2.orientation[0]);
+        snake2.count = 0;
     }
     if(bonusTimer == 0){
         addBonusItem();
@@ -510,13 +523,16 @@ function nextStage(){
         pause();
     }
     snake = new Snake();
+    if(player2){
+        snake2 = new SolidSnake();
+    }
+    
     portal = false;
     mapDraw();
     mapLoader();
-    x = 9;
-    y = 9;
+    
     fail = false;
-    unitSize = 1;
+    
     info.style.color = '#fff';
     drawScore();
     level = 0;
@@ -527,10 +543,7 @@ function nextStage(){
     message.className = 'message';
     infoLvl.innerText = level;
     rAF = null;
-    snake.unitCellX = [];
-    snake.unitCellY = [];
-    snake.unitCellX.push(x);
-    snake.unitCellY.push(y);
+
     initItems();
     hiScoreDraw()
     drawField();

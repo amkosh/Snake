@@ -235,7 +235,7 @@ const stageName = {
 }
 
 const stageParams = {
-    stage0: [101, 20, true, 10],
+    stage0: [101, 20, true, 10, 10, 4, 10, 15],
     stage1: [76, 18, true, 7],
     stage2: [81, 24, true, 8],
     stage3: [71, 24, true, 7],
@@ -252,6 +252,13 @@ function paramsLoad(){
     speed = stageParams['stage' + stage][1];
     borders = stageParams['stage' + stage][2];
     lvlGrow = stageParams['stage' + stage][3];
+	snake.x = stageParams['stage' + stage][4];
+    snake.y = stageParams['stage' + stage][5];
+    if(player2){
+		snake2.x = stageParams['stage' + stage][6];
+    	snake2.y = stageParams['stage' + stage][7];
+	}
+	drawField();
     drawScore();
 }
 

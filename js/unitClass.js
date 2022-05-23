@@ -1,21 +1,24 @@
 //Отдельный класс для змеюки
 class Snake {
     constructor() {
+        this.x = stageParams['stage' + stage][4];
+        this.y = stageParams['stage' + stage][5];
         this.unitCellX = []; //Хранилище координат X для отображения всей длины змеи
         this.unitCellY = []; //Хранилище координат Y для отображения всей длины змеи
-        this.unitCellX.push(x); //Добавляем первую ячейку в хранилище змеи
-        this.unitCellY.push(y); //Добавляем первую ячейку в хранилище змеи
+        this.unitCellX.push(this.x); //Добавляем первую ячейку в хранилище змеи
+        this.unitCellY.push(this.y); //Добавляем первую ячейку в хранилище змеи
         this.orientation = [];
         this.orientation.push('ArrowUp');
         this.unitSize = 1;
         this.field = field;
+        this.count = 0;
     }
 
     unitReverse() {
         this.unitCellX.reverse();
         this.unitCellY.reverse();
-        x = this.unitCellX[0];
-        y = this.unitCellY[0];
+        this.x = this.unitCellX[0];
+        this.y = this.unitCellY[0];
         this.orientation.reverse();
 
         for(let i = 0; i < this.unitSize; i++){
@@ -50,20 +53,20 @@ class Snake {
             this.orientation.unshift(event);
 
             switch(this.orientation[0]){
-                case 'ArrowUp': --x;
+                case 'ArrowUp': --this.x;
                 break;
-                case 'ArrowDown': ++x;
+                case 'ArrowDown': ++this.x;
                 break;
-                case 'ArrowRight': ++y;
+                case 'ArrowRight': ++this.y;
                 break;
-                case 'ArrowLeft': --y;
+                case 'ArrowLeft': --this.y;
                 break;
                 default: return;
             }
-            //count = 0;
-            colCheck();
-            this.unitCellX.unshift(x);
-            this.unitCellY.unshift(y);
+            this.count = 0;
+            colCheck(this);
+            this.unitCellX.unshift(this.x);
+            this.unitCellY.unshift(this.y);
             this.unitCellX.pop();
             this.unitCellY.pop();
             this.orientation.pop();
@@ -87,8 +90,8 @@ class Snake {
 
     //Рост змеи при поглощении предмета
     unitGrowUp() {
-        this.unitCellX.push(x);
-        this.unitCellY.push(y);
+        this.unitCellX.push(this.x);
+        this.unitCellY.push(this.y);
         switch(this.orientation[0]) {
                 case 'ArrowUp': this.orientation.push('ArrowUp');
                 break;
@@ -106,8 +109,8 @@ class Snake {
 //Отдельный класс для второй змеюки
 class SolidSnake {
     constructor() {
-        this.x = xP2;
-        this.y = yP2;
+        this.x = stageParams['stage' + stage][6];;
+        this.y = stageParams['stage' + stage][7];;
         this.unitCellX = []; //Хранилище координат X для отображения всей длины змеи
         this.unitCellY = []; //Хранилище координат Y для отображения всей длины змеи
         this.unitCellX.push(this.x); //Добавляем первую ячейку в хранилище змеи
@@ -116,6 +119,7 @@ class SolidSnake {
         this.orientation.push('w');
         this.unitSize = 1;
         this.field = field;
+        this.count = 0;
     }
 
     unitReverse() {
@@ -167,7 +171,7 @@ class SolidSnake {
                 break;
                 default: return;
             }
-            //count = 0;
+            this.count = 0;
             colCheck(this);
             this.unitCellX.unshift(this.x);
             this.unitCellY.unshift(this.y);
