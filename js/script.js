@@ -14,7 +14,7 @@ let editor = false; //Запущенный редактор
 //let level = 0;  //Начальный уровень
 let portal = false;
 let lives = 2;
-let liveScore = 50000;
+let liveScore = 100000;
 let aFlags = [false,false,false,false];
 
 let lvlGrow = 10;
@@ -662,7 +662,7 @@ function cornCheck() {
     let f2 = field[19][0].className;
     let f3 = field[0][19].className;
     let f4 = field[19][19].className;
-    if((f1 == f2 == f3 == f4 == 'unit') ||  (f1 == f2 == f3 == f4 == 'unit__head')){
+    if((f1 == 'unit' && f2 == 'unit' && f3 == 'unit' && f4 == 'unit') ||  (f1 == 'unit__head' && f2 == 'unit__head' && f3 == 'unit__head' && f4 == 'unit__head')){
         snake.score += 10000;
         snake.talk.innerText = 'Awesome!'
         message.innerText = 'Achievment unlocked: CORNERED!!!';
