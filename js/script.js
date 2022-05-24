@@ -15,12 +15,12 @@ let editor = false; //Запущенный редактор
 let portal = false;
 let lives = 2;
 let liveScore = 50000;
-let gotHiScore = false;
+
 let lvlGrow = 10;
 let goal = stageParams['stage' + stage][0];
 
 //Twin Snake
-let player2 = true;
+let player2 = false;
 
 //Параметры (читы)
 let autoMove = true;
@@ -40,6 +40,12 @@ function selfDestructToggle(){
 }
 function reverseToggle(){
     reverse = !reverse;
+}
+function twinsToggle(){
+    player2 = !player2;
+    document.getElementById('infoP2').classList.toggle('hidden');
+    document.getElementById('infoP2').classList.toggle('info');
+    restart();
 }
 
 //Таблица рекордов
@@ -68,20 +74,25 @@ function hiScoreDraw() {
 }
 
 //Сохранение рекордов
-function hiScoreSave(){
+function hiScoreSave(player){
     let pos = 10;
     for (let i = 0; i < hiScore.length; i++){
-        if(score > hiScore[i]){
+        if(player.score > hiScore[i]){
             pos = i;
             break;
         } else {
             continue;
         }
     }
-    hiScore.splice(pos, 0, score);
+    hiScore.splice(pos, 0, player.score);
     hiScore.pop();
     if(pos != 10){
-        document.getElementById('p' + (pos+1)).style.color = '#f00';
+        if(player.player == 'p1'){
+            document.getElementById('p' + (pos+1)).style.color = '#0f0';
+        } else {
+            document.getElementById('p' + (pos+1)).style.color = '#f00';
+        }
+        
     }
     hiScoreDraw();
 }
@@ -89,14 +100,14 @@ function hiScoreSave(){
 //Обновление счетчика очков
 function drawScore(player) {
     for (let i = 0; i < hiScore.length; i++){
-        if(score > hiScore[i] && !gotHiScore){
+        if(player.score >= hiScore[i] && !player.gotHiScore){
             player.info.style.color = '#f00';
-            message.innerText = 'You got a HI-Score!!!';
+            message.innerText = player.player.toUpperCase() + ' got a HI-Score!!!';
             message.className = 'message';
-            gotHiScore = true;
+            player.gotHiScore = true;
         }
     }
-    if(score > liveScore){
+    if(player.score > liveScore){
         lives++;
         liveScore+= 50000;
         message.innerText = '1UP !!!';
@@ -109,7 +120,7 @@ function drawScore(player) {
             snake2.infoSize.innerText = goal - (snake.unitSize + snake2.unitSize - 2);
             snake.infoSize.innerText = goal - (snake.unitSize + snake2.unitSize - 2);
         } else {
-            player.infoSize.innerText = goal - snake.unitSize-1;
+            player.infoSize.innerText = goal - (snake.unitSize-1);
         }
     }
 }
@@ -284,6 +295,7 @@ function colCheck(player){
         items[player.x][player.y] = 0;
         player.score += 5000;
         drawScore(player);
+        message.innerText = player.player.toUpperCase() + ": Tasty!!";
     }
     //Проверка на портал
     else if (items[player.x][player.y] == 3){
@@ -311,7 +323,7 @@ function colCheck(player){
 function gameOver(player) {
     lives--;
     if(lives < 0){
-        hiScoreSave();
+        hiScoreSave(player);
         for(let i = 0; i < player.unitSize; i++){
             let tmpX = player.unitCellX[i];
             let tmpY = player.unitCellY[i];
@@ -331,9 +343,13 @@ function gameOver(player) {
         }
         
         if(player.player == 'p2'){
+            let tmpScoreP2 = snake2.score;
             snake2 = new Snake('p2');
+            snake2.score = tmpScoreP2;
         } else {
+            let tmpScoreP1 = snake.score;
             snake = new Snake('p1');
+            snake.score = tmpScoreP1;
         }
         //paramsLoad();
         
@@ -349,12 +365,13 @@ function gameOver(player) {
         document.getElementById("game_over").innerText = '';
         document.getElementById("game_over").className = '';
         document.getElementById("lives").innerText = lives;
-        message.className = 'hidden_btn';
+        message.innerText = player.player.toUpperCase() + ": Ouch!!";
+        message.className = 'message';
         if(lives == 0){
             message.innerText = "Last chance!"
             message.className = 'message';
         }
-        player.infoLvl.innerText = level;
+        player.infoLvl.innerText = player.level;
         //rAF = null;
         initItems();
         hiScoreDraw()

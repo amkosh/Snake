@@ -46,7 +46,7 @@
 
         <section id="first"></section>
 
-        <div id="infoP2" class="info">
+        <div id="infoP2" class="hidden">
             <div>
                 <p>Player 2</p>
             </div>
@@ -117,6 +117,14 @@
                 <input type="radio" name="reverse" id="reverseOn"  onchange="reverseToggle(), this.blur()">
                 <label for="reverseOff">off</label>
                 <input type="radio" name="reverse" id="reverseOff" onchange="reverseToggle(), this.blur()" checked>
+            </div>
+            <br>
+            <div>
+                <p>Twin snakes:</p>
+                <label for="twinsOn">on</label>
+                <input type="radio" name="twins" id="twinsOn"  onchange="twinsToggle(), this.blur()">
+                <label for="twinsOff">off</label>
+                <input type="radio" name="twins" id="twinsOff" onchange="twinsToggle(), this.blur()" checked>
             </div>
             <br>
             <div>

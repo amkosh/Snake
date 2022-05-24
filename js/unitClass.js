@@ -22,6 +22,7 @@ class Snake {
         this.speed = stageParams['stage' + stage][1];; //Число кадров перед обновлением
         this.level = 0;  //Начальный уровень
         this.score = 0;
+        this.gotHiScore = false;
         this.orientation = [];
         this.orientation.push('');
         this.unitCellX = []; //Хранилище координат X для отображения всей длины змеи

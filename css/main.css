@@ -13,6 +13,7 @@ body {
     color: #fff;
     user-select: none;
     font-family: 'Press Start 2P', cursive;
+    line-height: 50%;
 }
 
 .block {
