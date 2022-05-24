@@ -15,15 +15,6 @@ body {
     font-family: 'Press Start 2P', cursive;
 }
 
-#info {
-    padding: 15px;
-    display: flex;
-    flex-direction: column;
-    width: 200px;
-    border: dashed rgb(28, 83, 97) 1px;
-    background-color: rgb(0, 14, 22);
-}
-
 .block {
     background-color: #555;
     border: solid 1px #555;
@@ -135,6 +126,19 @@ button {
 
 .hidden_btn {
     visibility: hidden;
+}
+
+.hidden {
+    display: none;
+}
+
+.info {
+    padding: 15px;
+    display: flex;
+    flex-direction: column;
+    width: 200px;
+    border: dashed rgb(28, 83, 97) 1px;
+    background-color: rgb(0, 14, 22);
 }
 
 .portal {

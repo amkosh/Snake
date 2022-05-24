@@ -1,17 +1,17 @@
 let stage = 0;
 let first = document.getElementById("first");   //Сегмент, куда будет помещено игровое поле
-let info = document.getElementById("score");    //Для вывода очков
-let infoLvl = document.getElementById('lvl');   //Для вывода уровня
-let infoSize = document.getElementById('size'); //Для вывода длины змеи
+//let info = document.getElementById("score");    //Для вывода очков
+//let infoLvl = document.getElementById('lvl');   //Для вывода уровня
+//let infoSize = document.getElementById('size'); //Для вывода длины змеи
 let message = document.getElementById('message'); //Для вывода информации
 let field = [20];   //Создаем массив для игрового поля (количество рядов)
 let items = [20];   //Создаем массив для предметов (той же величины, что и поле)
-let score = 0;  //Счетчик очков
+//let score = 0;  //Счетчик очков
 let fail = false;   //Gameover
 let isPause = false;    //Pause
 let editor = false; //Запущенный редактор
-let speed = 20; //Число кадров перед обновлением
-let level = 0;  //Начальный уровень
+//let speed = 20; //Число кадров перед обновлением
+//let level = 0;  //Начальный уровень
 let portal = false;
 let lives = 2;
 let liveScore = 50000;
@@ -46,13 +46,13 @@ function reverseToggle(){
 let hiScore = [100000, 90000, 80000, 70000, 60000, 50000, 40000, 30000, 20000, 10000];
 
 //Выдача очков в зависимости от сложности
-function getScore(){
+function getScore(player){
     if(autoMove && borders && selfDestruct && !reverse){
-        return 100 * (level+1);
+        return 100 * (player.level+1);
     } else if(!autoMove && !borders && !selfDestruct){
-        return 20 * (level+1);
+        return 20 * (player.level+1);
     } else if (autoMove || borders || selfDestruct || reverse) {
-        return 40 * (level+1);
+        return 40 * (player.level+1);
     }
 }
 
@@ -87,10 +87,10 @@ function hiScoreSave(){
 }
 
 //Обновление счетчика очков
-function drawScore() {
+function drawScore(player) {
     for (let i = 0; i < hiScore.length; i++){
         if(score > hiScore[i] && !gotHiScore){
-            info.style.color = '#f00';
+            player.info.style.color = '#f00';
             message.innerText = 'You got a HI-Score!!!';
             message.className = 'message';
             gotHiScore = true;
@@ -103,16 +103,15 @@ function drawScore() {
         message.className = 'message';
         document.getElementById("lives").innerText = lives;
     }
-    info.innerText = score;
+    player.info.innerText = player.score;
     if(!portal){
         if(player2){
-            infoSize.innerText = goal+1 - (snake.unitSize + snake2.unitSize);
+            snake2.infoSize.innerText = goal - (snake.unitSize + snake2.unitSize - 2);
+            snake.infoSize.innerText = goal - (snake.unitSize + snake2.unitSize - 2);
         } else {
-            infoSize.innerText = goal+1 - snake.unitSize;
+            player.infoSize.innerText = goal - snake.unitSize-1;
         }
-        
     }
-    
 }
 
 // следим за кадрами анимации, чтобы если что — остановить игру
@@ -136,13 +135,6 @@ for(let i = 0; i < 20; i++) {
     items[i] = [20];
 }
 
-/*
-let snake = new Snake();
-if(player2){
-    let snake2 = new SolidSnake();
-}
-*/
-
 initField();    //Заполнение поля div'ами
 restart();  //Старт
 
@@ -155,7 +147,17 @@ function controls(event){
             snake.move(event.key);
         } else if ((isPause == true) && (event.key == 'w' || event.key == 'a' || event.key == 'd' || event.key == 's')) {
             if(player2){
-                snake2.move(event.key);
+                switch(event.key){
+                    case 'w': snake2.move('ArrowUp');
+                    break;
+                    case 'a': snake2.move('ArrowLeft');
+                    break;
+                    case 's': snake2.move('ArrowDown');
+                    break;
+                    case 'd': snake2.move('ArrowRight');
+                    break;
+                }
+                
             }
         }
     }
@@ -274,14 +276,14 @@ function colCheck(player){
         player.unitSize++;
         player.unitGrowUp();
         lvlUp(player);
-        score += getScore();
-        drawScore();
+        player.score += getScore(player);
+        drawScore(player);
     }
     //Проверка на бонус
     else if (items[player.x][player.y] == 2){
         items[player.x][player.y] = 0;
-        score += 5000;
-        drawScore();
+        player.score += 5000;
+        drawScore(player);
     }
     //Проверка на портал
     else if (items[player.x][player.y] == 3){
@@ -289,12 +291,12 @@ function colCheck(player){
     }
 
     //Проверка на себя
-    else if (field[player.x][player.y].className == "unit" && selfDestruct) {
+    else if ((field[player.x][player.y].className == "unit" || field[player.x][player.y].className == "unit__head") && selfDestruct) {
         gameOver(player);
     }
 
     //Проверка на второго игрока
-    else if (field[player.x][player.y].className == "unit__foe" && selfDestruct) {
+    else if ((field[player.x][player.y].className == "unit__foe" || field[player.x][player.y].className == "unit__foe__head") && selfDestruct) {
         gameOver(player);
     }
 
@@ -328,20 +330,21 @@ function gameOver(player) {
             field[tmpX][tmpY].className = "dead";
         }
         
-        snake = new Snake();
-        if(player2){
-            snake2 = new SolidSnake();
+        if(player.player == 'p2'){
+            snake2 = new Snake('p2');
+        } else {
+            snake = new Snake('p1');
         }
-        paramsLoad();
+        //paramsLoad();
         
         if(isPause){
-            pause();
+            //pause();
         }
         fail = false;
-        player.unitSize = 1;
-        info.style.color = '#fff';
-        drawScore();
-        level = 0;
+        //player.unitSize = 1;
+        player.info.style.color = '#fff';
+        drawScore(player);
+        //level = 0;
         
         document.getElementById("game_over").innerText = '';
         document.getElementById("game_over").className = '';
@@ -351,11 +354,11 @@ function gameOver(player) {
             message.innerText = "Last chance!"
             message.className = 'message';
         }
-        infoLvl.innerText = level;
-        rAF = null;
+        player.infoLvl.innerText = level;
+        //rAF = null;
         initItems();
         hiScoreDraw()
-        cancelAnimationFrame(rAF);
+        //cancelAnimationFrame(rAF);
         addItem();
     }
 }
@@ -368,9 +371,9 @@ function restart() {
         portal = false;
         
         mapLoader();
-        snake = new Snake();
+        snake = new Snake('p1');
         if(player2){
-            snake2 = new SolidSnake();
+            snake2 = new Snake('p2');
         }
         paramsLoad();
         mapDraw();
@@ -378,17 +381,20 @@ function restart() {
             pause();
         }
         fail = false;
-        unitSize = 1;
-        score = 0;
+        //unitSize = 1;
+        //score = 0;
         info.style.color = '#fff';
-        drawScore();
-        level = 0;
+        drawScore(snake);
+        //level = 0;
         
         document.getElementById("game_over").innerText = '';
         document.getElementById("game_over").className = '';
         message.innerText = stageName['stage' + stage];
         message.className = 'message';
-        infoLvl.innerText = level;
+        snake.infoLvl.innerText = snake.level;
+        if(player2){
+            snake2.infoLvl.innerText = snake2.level;
+        }
         rAF = null;
 
         initItems();
@@ -400,12 +406,19 @@ function restart() {
 
 //Повышение уровня сложности, проверка на победу
 function lvlUp(player) {
-    if((player.unitSize) % lvlGrow == 0) {
-        speed--;
-        level++;
-        infoLvl.innerText = level;
+    let sum = 0;
+    if(player2){
+        sum = (snake.unitSize + snake2.unitSize) - 2;
+    } else {
+        sum = snake.unitSize;
     }
-    if(player.unitSize >= goal){
+
+    if(player.unitSize % lvlGrow == 0) {
+        player.speed--;
+        player.level++;
+        player.infoLvl.innerText = player.level;
+    }
+    if(sum >= goal){
         document.getElementById("game_over").innerText = 'STAGE COMPLETE!';
         message.innerText = 'Go to the portal!'
         message.className = 'message';
@@ -427,13 +440,12 @@ function getRandomInt(min, max) {
 function loop() {
     // начинаем анимацию
     rAF = requestAnimationFrame(loop);
-    // фигура сдвигается вниз каждые 35 кадров
-    if (++snake.count > speed && autoMove) {
+    if (++snake.count > snake.speed && autoMove) {
 		//Движение змеи
         snake.move(snake.orientation[0]);
         snake.count = 0; 
     }
-    if(player2 && (++snake2.count > speed && autoMove)){
+    if(player2 && (++snake2.count > snake2.speed && autoMove)){
         snake2.move(snake2.orientation[0]);
         snake2.count = 0;
     }
@@ -522,9 +534,13 @@ function nextStage(){
     if(isPause){
         pause();
     }
-    snake = new Snake();
+    let tmpScoreP1 = snake.score;
+    snake = new Snake('p1');
+    snake.score = tmpScoreP1;
     if(player2){
-        snake2 = new SolidSnake();
+        let tmpScoreP2 = snake2.score;
+        snake2 = new Snake('p2');
+        snake2.score = tmpScoreP2;
     }
     
     portal = false;
@@ -534,7 +550,7 @@ function nextStage(){
     fail = false;
     
     info.style.color = '#fff';
-    drawScore();
+    drawScore(snake);
     level = 0;
     paramsLoad();
     document.getElementById("game_over").innerText = '';

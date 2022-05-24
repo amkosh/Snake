@@ -235,21 +235,21 @@ const stageName = {
 }
 
 const stageParams = {
-    stage0: [101, 20, true, 10, 10, 4, 10, 15],
-    stage1: [76, 18, true, 7],
-    stage2: [81, 24, true, 8],
-    stage3: [71, 24, true, 7],
-    stage4: [101, 4, false, 15],
-    stage5: [61, 20, true, 6],
-    stage6: [201, 26, true, 15],
-    stage7: [61, 26, true, 6],
-    stage8: [51, 22, true, 10],
-    stage9: [101, 20, false, 10]
+    stage0: [100, 20, true, 10, 10, 4, 10, 15],
+    stage1: [75, 18, true, 7, 10, 5, 10, 14],
+    stage2: [80, 24, true, 8, 14, 5, 14, 14],
+    stage3: [70, 24, true, 7, 14, 3, 14, 16],
+    stage4: [100, 4, false, 15, 14, 4, 14, 16],
+    stage5: [60, 20, true, 6, 16, 5, 16, 14],
+    stage6: [200, 26, true, 15, 16, 5, 16, 14],
+    stage7: [60, 26, true, 6, 16, 5, 16, 15],
+    stage8: [50, 22, true, 10, 4, 18, 19, 19],
+    stage9: [100, 20, false, 10, 10, 8, 10, 11],
 }
 
 function paramsLoad(){
     goal = stageParams['stage' + stage][0];
-    speed = stageParams['stage' + stage][1];
+    //speed = stageParams['stage' + stage][1];
     borders = stageParams['stage' + stage][2];
     lvlGrow = stageParams['stage' + stage][3];
 	snake.x = stageParams['stage' + stage][4];
@@ -259,7 +259,7 @@ function paramsLoad(){
     	snake2.y = stageParams['stage' + stage][7];
 	}
 	drawField();
-    drawScore();
+    drawScore(snake);
 }
 
 const stageInfo = {
