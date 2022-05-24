@@ -573,6 +573,9 @@ function setStage(){
 function mapLoader() {
     document.getElementById("stage").innerHTML = '';
     let num = 0;
+    let dummy = document.createElement('option');
+    dummy.innerText = 'Select';
+    document.getElementById("stage").appendChild(dummy);
     for(max in maps){
         if(locks[num]){
             let opt = document.createElement('option');
