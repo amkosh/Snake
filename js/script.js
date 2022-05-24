@@ -15,6 +15,7 @@ let editor = false; //Запущенный редактор
 let portal = false;
 let lives = 2;
 let liveScore = 50000;
+let aFlags = [false,false,false,false];
 
 let lvlGrow = 10;
 let goal = stageParams['stage' + stage][0];
@@ -102,16 +103,14 @@ function drawScore(player) {
     for (let i = 0; i < hiScore.length; i++){
         if(player.score >= hiScore[i] && !player.gotHiScore){
             player.info.style.color = '#f00';
-            message.innerText = player.player.toUpperCase() + ' got a HI-Score!!!';
-            message.className = 'message';
+            player.talk.innerText = "Yeahhh!!";
             player.gotHiScore = true;
         }
     }
     if(player.score > liveScore){
         lives++;
         liveScore+= 50000;
-        message.innerText = '1UP !!!';
-        message.className = 'message';
+        player.talk.innerText = '1UP !!!';
         document.getElementById("lives").innerText = lives;
     }
     player.info.innerText = player.score;
@@ -152,6 +151,9 @@ restart();  //Старт
 //Обработчик ввода
 function controls(event){
     if(!fail){
+        if(!aFlags[1] && isPause){
+            kCode(event.key);
+        }
         if(event.key == ' '){
             pause();
         } else if ((isPause == true) && (event.key == 'ArrowUp' || event.key == 'ArrowLeft' || event.key == 'ArrowRight' || event.key == 'ArrowDown')) {
@@ -168,7 +170,6 @@ function controls(event){
                     case 'd': snake2.move('ArrowRight');
                     break;
                 }
-                
             }
         }
     }
@@ -262,6 +263,9 @@ function drawField(){
             snake2.initUnit();
         }
     }
+    if(!aFlags[3]){
+        cornCheck();
+    }
 }
 
 //Проверка столкновений
@@ -295,7 +299,7 @@ function colCheck(player){
         items[player.x][player.y] = 0;
         player.score += 5000;
         drawScore(player);
-        message.innerText = player.player.toUpperCase() + ": Tasty!!";
+        player.talk.innerText = "So Tasty!!";
     }
     //Проверка на портал
     else if (items[player.x][player.y] == 3){
@@ -321,6 +325,13 @@ function colCheck(player){
 
 //Остановка игры при проигрыше
 function gameOver(player) {
+    if(!aFlags[0] && player.x == player.unitCellX[player.unitSize-1] && player.y == player.unitCellY[player.unitSize-1]){
+        message.innerText = 'Achievment unlocked: UROBOROS!!!';
+        player.score += 10000;
+        document.getElementById('achiev').className = 'info';
+        document.getElementById('urobor').classList.remove('locked');
+        aFlags[0] = true;
+    }
     lives--;
     if(lives < 0){
         hiScoreSave(player);
@@ -330,8 +341,8 @@ function gameOver(player) {
             field[tmpX][tmpY].className = "dead";
         }
         fail = true;
-        document.getElementById("game_over").innerText = 'GAME OVER!';
-        document.getElementById("game_over").className = 'gameover';
+        player.talk.innerText = 'GAME OVER!';
+        player.talk.className = 'gameover';
         message.innerText = 'Press RESTART for another try!'
         message.className = 'message'
         cancelAnimationFrame(rAF);
@@ -362,14 +373,12 @@ function gameOver(player) {
         drawScore(player);
         //level = 0;
         
-        document.getElementById("game_over").innerText = '';
-        document.getElementById("game_over").className = '';
+        //document.getElementById("game_over").innerText = '';
+        //document.getElementById("game_over").className = '';
         document.getElementById("lives").innerText = lives;
-        message.innerText = player.player.toUpperCase() + ": Ouch!!";
-        message.className = 'message';
+        player.talk.innerText = "Ouch!!";
         if(lives == 0){
-            message.innerText = "Last chance!"
-            message.className = 'message';
+            player.talk.innerText = "Last chance!"
         }
         player.infoLvl.innerText = player.level;
         //rAF = null;
@@ -404,8 +413,8 @@ function restart() {
         drawScore(snake);
         //level = 0;
         
-        document.getElementById("game_over").innerText = '';
-        document.getElementById("game_over").className = '';
+        //document.getElementById("game_over").innerText = '';
+        //document.getElementById("game_over").className = '';
         message.innerText = stageName['stage' + stage];
         message.className = 'message';
         snake.infoLvl.innerText = snake.level;
@@ -432,11 +441,19 @@ function lvlUp(player) {
 
     if(player.unitSize % lvlGrow == 0) {
         player.speed--;
+        if(!aFlags[2] && player.speed <= 0){
+            message.innerText = 'Achievment unlocked: LIGHTSPEED!!!';
+            player.score += 10000;
+            document.getElementById('achiev').className = 'info';
+            document.getElementById('lightspeed').classList.remove('locked');
+            player.talk.innerText = 'Aaaahhhh!'
+            aFlags[2] = true;
+        }
         player.level++;
         player.infoLvl.innerText = player.level;
     }
     if(sum >= goal){
-        document.getElementById("game_over").innerText = 'STAGE COMPLETE!';
+        player.talk.innerText = 'STAGE COMPLETE!';
         message.innerText = 'Go to the portal!'
         message.className = 'message';
         if(!portal){
@@ -480,13 +497,13 @@ function pause() {
     if(isPause){
         rAF = requestAnimationFrame(loop);
         button.innerText = 'PAUSE';
-        document.getElementById("game_over").innerText = '';
-        document.getElementById("game_over").className = '';
+        snake.talk.innerText = '';
+        snake.talk.className = '';
     } else {
         cancelAnimationFrame(rAF);
         button.innerText = 'RESUME';
-        document.getElementById("game_over").innerText = 'PAUSE';
-        document.getElementById("game_over").className = 'gameover';
+        snake.talk.innerText = 'PAUSE';
+        snake.talk.className = 'gameover';
     }
 }
 
@@ -570,8 +587,8 @@ function nextStage(){
     drawScore(snake);
     level = 0;
     paramsLoad();
-    document.getElementById("game_over").innerText = '';
-    document.getElementById("game_over").className = '';
+    //document.getElementById("game_over").innerText = '';
+    //document.getElementById("game_over").className = '';
     message.innerText = stageName['stage' + stage];
     message.className = 'message';
     infoLvl.innerText = level;
@@ -581,4 +598,53 @@ function nextStage(){
     hiScoreDraw()
     drawField();
     addItem();
+}
+
+let kCCheck = 0;
+function kCode(key){
+    if(kCCheck == 9){
+        message.innerText = 'Achievment unlocked: KONAMI CODE!!!';
+        if(player2){
+            snake.score += 10000;
+            snake2.score += 10000;
+            drawScore(snake);
+            drawScore(snake2);
+            snake.talk.innerText = 'Awesome!'
+            snake2.talk.innerText = 'Awesome!'
+        } else {
+            snake.score += 10000;
+            snake.talk.innerText = 'Awesome!'
+            drawScore(snake);
+        }
+        
+        document.getElementById('achiev').className = 'info';
+        document.getElementById('konami').classList.remove('locked');
+        aFlags[1] = true;
+    }
+
+    let kCode = ['ArrowUp', 'ArrowUp', 'ArrowDown', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'ArrowLeft', 'ArrowRight', 'b', 'a'];
+    if(key == kCode[kCCheck]){
+        kCCheck++;
+    } else {
+        kCCheck = 0;
+    }
+}
+
+function cornCheck() {
+    let f1 = field[0][0].className;
+    let f2 = field[19][0].className;
+    let f3 = field[0][19].className;
+    let f4 = field[19][19].className;
+    if((f1 == f2 == f3 == f4 == 'unit') ||  (f1 == f2 == f3 == f4 == 'unit__head')){
+        snake.score += 10000;
+        snake.talk.innerText = 'Awesome!'
+    }
+    if((f1 == f2 == f3 == f4 == 'unit__foe') ||  (f1 == f2 == f3 == f4 == 'unit__foe__head')){
+        snake2.score += 10000;
+        snake2.talk.innerText = 'Awesome!'
+    }
+    message.innerText = 'Achievment unlocked: CORNERED!!!';
+    document.getElementById('achiev').className = 'info';
+    document.getElementById('fourdim').classList.remove('locked');
+    aFlags[3] = true;
 }

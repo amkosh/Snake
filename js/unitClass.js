@@ -10,6 +10,8 @@ class Snake {
             this.info = document.getElementById("score");
             this.infoLvl = document.getElementById('lvl');   //Для вывода уровня
             this.infoSize = document.getElementById('size'); //Для вывода длины змеи
+            this.talk = document.getElementById("game_over");
+            this.speech = ['Yummy!', 'Go on!', 'More!!', 'Eeek!', 'Good!', 'Whee!!']
         } else if (this.player == 'p2'){
             this.x = stageParams['stage' + stage][6];
             this.y = stageParams['stage' + stage][7];
@@ -18,6 +20,8 @@ class Snake {
             this.info = document.getElementById("scoreP2");
             this.infoLvl = document.getElementById('lvlP2');   //Для вывода уровня
             this.infoSize = document.getElementById('sizeP2'); //Для вывода длины змеи
+            this.talk = document.getElementById("game_overP2");
+            this.speech = ['Yay!', 'Nice!', 'Whoa!!', 'Ha!', 'Aye!', 'Hurrah!!']
         }
         this.speed = stageParams['stage' + stage][1];; //Число кадров перед обновлением
         this.level = 0;  //Начальный уровень
@@ -32,7 +36,7 @@ class Snake {
         this.unitSize = 1;
         this.field = field;
         this.count = 0;
-        
+        this.talk.innerText = "Let's go!";
     }
 
     unitReverse() {
@@ -122,5 +126,6 @@ class Snake {
                 case 'ArrowLeft': this.orientation.push('ArrowLeft');
                 break;
         }
+        this.talk.innerText = this.speech[getRandomInt(0,5)];
     }
 }

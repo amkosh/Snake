@@ -16,6 +16,10 @@ body {
     line-height: 50%;
 }
 
+.locked {
+    color: rgb(0, 23, 36);
+}
+
 .block {
     background-color: #555;
     border: solid 1px #555;
