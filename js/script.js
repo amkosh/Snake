@@ -174,7 +174,7 @@ function controls(event){
             snake.move(event.key);
         } else if ((isPause == true) && (event.key == 'w' || event.key == 'a' || event.key == 'd' || event.key == 's')) {
             if(player2){
-                snake.moving = true;
+                snake2.moving = true;
                 switch(event.key){
                     case 'w': snake2.move('ArrowUp');
                     break;
