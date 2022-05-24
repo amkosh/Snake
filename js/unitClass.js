@@ -11,6 +11,7 @@ class Snake {
             this.infoLvl = document.getElementById('lvl');   //Для вывода уровня
             this.infoSize = document.getElementById('size'); //Для вывода длины змеи
             this.talk = document.getElementById("game_over");
+            this.talk.innerText = "Let's go!";
             this.speech = ['Yummy!', 'Go on!', 'More!!', 'Eeek!', 'Good!', 'Whee!!']
         } else if (this.player == 'p2'){
             this.x = stageParams['stage' + stage][6];
@@ -21,6 +22,7 @@ class Snake {
             this.infoLvl = document.getElementById('lvlP2');   //Для вывода уровня
             this.infoSize = document.getElementById('sizeP2'); //Для вывода длины змеи
             this.talk = document.getElementById("game_overP2");
+            this.talk.innerText = "SNAAAAAKE!";
             this.speech = ['Yay!', 'Nice!', 'Whoa!!', 'Ha!', 'Aye!', 'Hurrah!!']
         }
         this.speed = stageParams['stage' + stage][1];; //Число кадров перед обновлением
@@ -28,7 +30,7 @@ class Snake {
         this.score = 0;
         this.gotHiScore = false;
         this.orientation = [];
-        this.orientation.push('');
+        this.orientation.push('ArrowUp');
         this.unitCellX = []; //Хранилище координат X для отображения всей длины змеи
         this.unitCellY = []; //Хранилище координат Y для отображения всей длины змеи
         this.unitCellX.push(this.x); //Добавляем первую ячейку в хранилище змеи
@@ -36,7 +38,7 @@ class Snake {
         this.unitSize = 1;
         this.field = field;
         this.count = 0;
-        this.talk.innerText = "Let's go!";
+        this.moving = false;
     }
 
     unitReverse() {

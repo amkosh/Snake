@@ -49,6 +49,19 @@ function twinsToggle(){
     restart();
 }
 
+function mode(){
+    let button = document.getElementById('mode');
+    player2 = !player2;
+    document.getElementById('infoP2').classList.toggle('hidden');
+    document.getElementById('infoP2').classList.toggle('info');
+    if(button.innerText == 'SOLO'){
+        button.innerText = 'TEAM';
+    } else {
+        button.innerText = 'SOLO';
+    }
+    restart();
+}
+
 //Таблица рекордов
 let hiScore = [100000, 90000, 80000, 70000, 60000, 50000, 40000, 30000, 20000, 10000];
 
@@ -157,9 +170,11 @@ function controls(event){
         if(event.key == ' '){
             pause();
         } else if ((isPause == true) && (event.key == 'ArrowUp' || event.key == 'ArrowLeft' || event.key == 'ArrowRight' || event.key == 'ArrowDown')) {
+            snake.moving = true;
             snake.move(event.key);
         } else if ((isPause == true) && (event.key == 'w' || event.key == 'a' || event.key == 'd' || event.key == 's')) {
             if(player2){
+                snake.moving = true;
                 switch(event.key){
                     case 'w': snake2.move('ArrowUp');
                     break;
@@ -188,7 +203,8 @@ function initItems() {
 function addItem() {
     let a = getRandomInt(0, 19);
     let b = getRandomInt(0, 19);
-    while(field[a][b].className != "field" || field[a][b].className == "grass"){
+    //while(field[a][b].className != "field" || field[a][b].className == "grass"){
+    while(field[a][b].className == "unit" || field[a][b].className == "block" || field[a][b].className == "unit__foe"){
         a = getRandomInt(0, 19);
         b = getRandomInt(0, 19);
     }
@@ -303,6 +319,7 @@ function colCheck(player){
     }
     //Проверка на портал
     else if (items[player.x][player.y] == 3){
+        locks[stage+1] = 1;
         nextStage();
     }
 
@@ -474,12 +491,12 @@ function getRandomInt(min, max) {
 function loop() {
     // начинаем анимацию
     rAF = requestAnimationFrame(loop);
-    if (++snake.count > snake.speed && autoMove) {
+    if (++snake.count > snake.speed && autoMove && snake.moving) {
 		//Движение змеи
         snake.move(snake.orientation[0]);
         snake.count = 0; 
     }
-    if(player2 && (++snake2.count > snake2.speed && autoMove)){
+    if(player2 && (++snake2.count > snake2.speed && autoMove && snake2.moving)){
         snake2.move(snake2.orientation[0]);
         snake2.count = 0;
     }
@@ -499,11 +516,15 @@ function pause() {
         button.innerText = 'PAUSE';
         snake.talk.innerText = '';
         snake.talk.className = '';
+        message.innerText = stageName['stage' + stage];
+        message.className = 'message';
     } else {
         cancelAnimationFrame(rAF);
         button.innerText = 'RESUME';
         snake.talk.innerText = 'PAUSE';
         snake.talk.className = 'gameover';
+        message.innerText = stageInfo['stage' + stage];
+        message.className = 'message';
     }
 }
 
@@ -553,11 +574,13 @@ function mapLoader() {
     document.getElementById("stage").innerHTML = '';
     let num = 0;
     for(max in maps){
-        let opt = document.createElement('option');
-        opt.value = num;
-        opt.id = num;
-        opt.innerText = 'Stage ' + (num+1);
-        document.getElementById("stage").appendChild(opt);
+        if(locks[num]){
+            let opt = document.createElement('option');
+            opt.value = num;
+            opt.id = num;
+            opt.innerText = 'Stage ' + (num+1);
+            document.getElementById("stage").appendChild(opt);
+        }
         num++;
     }
 }
@@ -591,7 +614,7 @@ function nextStage(){
     //document.getElementById("game_over").className = '';
     message.innerText = stageName['stage' + stage];
     message.className = 'message';
-    infoLvl.innerText = level;
+    //infoLvl.innerText = level;
     rAF = null;
 
     initItems();
@@ -619,6 +642,7 @@ function kCode(key){
         
         document.getElementById('achiev').className = 'info';
         document.getElementById('konami').classList.remove('locked');
+        document.getElementById('cheats').className = 'params';
         aFlags[1] = true;
     }
 
@@ -638,13 +662,17 @@ function cornCheck() {
     if((f1 == f2 == f3 == f4 == 'unit') ||  (f1 == f2 == f3 == f4 == 'unit__head')){
         snake.score += 10000;
         snake.talk.innerText = 'Awesome!'
+        message.innerText = 'Achievment unlocked: CORNERED!!!';
+        document.getElementById('achiev').className = 'info';
+        document.getElementById('fourdim').classList.remove('locked');
+        aFlags[3] = true;
     }
     if((f1 == f2 == f3 == f4 == 'unit__foe') ||  (f1 == f2 == f3 == f4 == 'unit__foe__head')){
         snake2.score += 10000;
         snake2.talk.innerText = 'Awesome!'
+        message.innerText = 'Achievment unlocked: CORNERED!!!';
+        document.getElementById('achiev').className = 'info';
+        document.getElementById('fourdim').classList.remove('locked');
+        aFlags[3] = true;
     }
-    message.innerText = 'Achievment unlocked: CORNERED!!!';
-    document.getElementById('achiev').className = 'info';
-    document.getElementById('fourdim').classList.remove('locked');
-    aFlags[3] = true;
 }

@@ -262,6 +262,17 @@ function paramsLoad(){
     drawScore(snake);
 }
 
+let locks = [1,0,0,0,0,0,0,0,0,0];
+
 const stageInfo = {
-    stage0: '',
+    stage0: 'Just get enough items and dont touch borders!',
+    stage1: 'Are you have claustrophobia? Walls is lava!',
+    stage2: 'Perfect camouflage! Wanna be P2?',
+    stage3: 'No locked doors, no window barred',
+    stage4: 'No borders for the speed king!',
+    stage5: 'It is the work for the red snake!',
+    stage6: 'More than 49,5 centimeters',
+    stage7: 'Hard to be worm',
+    stage8: 'It is time for a screamer!',
+    stage9: 'There is no escape! You failed!'
 }

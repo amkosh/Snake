@@ -168,7 +168,7 @@ button {
     100% {background-color: #fff;}
 }
 
-#params {
+.params {
     padding: 15px;
     display: flex;
     flex-direction: column;
@@ -177,7 +177,7 @@ button {
     background-color: rgb(0, 14, 22);
 }
 
-#params div{
+.params div{
     font-size: 10px;
 }
 
@@ -204,3 +204,32 @@ button {
     padding: 10px;
     border:dashed 1px rgb(28, 83, 97)
 }
+
+input[type="checkbox"] {
+    display: none;
+}
+
+label {
+    display: flex;
+    justify-content: flex-start;
+    color: #fff;
+    cursor: pointer;
+    line-height: 20px;
+    padding: 5px 0;
+}
+
+label:before {
+    content: " ";
+    display: inline-block;
+    width: 15px;
+    height: 15px;
+    background: #000;
+    border: 1px dashed rgb(28, 83, 97);
+    border-radius: 5px;
+    margin: 0px 10px 0px 0px;
+  }
+
+  input:checked + label:before {
+    border: 1px solid #fff;
+    background: #0f0;
+  }
