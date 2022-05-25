@@ -250,6 +250,7 @@ input:checked + label:before {
         display:flex;
         flex-direction: column;
         height: 100%;
+        overscroll-behavior-y: contain;
     }
     .buttons {
         display: grid;
