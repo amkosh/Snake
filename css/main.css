@@ -1,6 +1,6 @@
 #first {
     display: grid;
-    grid-template-columns:repeat(20, 20px);
+    grid-template-columns:repeat(20, 20fr);
 }
 
 header {
@@ -106,7 +106,7 @@ body {
 .play__field {
     display: flex;
     flex-direction: row;
-    justify-content:flex-start;
+    justify-content:space-between;
 }
 
 .dead {
@@ -130,7 +130,7 @@ button {
 }
 
 .hidden_btn {
-    visibility: hidden;
+    display: none;
 }
 
 .hidden {
@@ -200,7 +200,7 @@ button {
 
 .message {
     text-align: center;
-    width: 974px;
+    width: 100%;
     padding: 10px;
     border:dashed 1px rgb(28, 83, 97)
 }
@@ -227,37 +227,75 @@ label:before {
     border: 1px dashed rgb(28, 83, 97);
     border-radius: 5px;
     margin: 0px 10px 0px 0px;
-  }
+}
 
-  input:checked + label:before {
+input:checked + label:before {
     border: 1px solid #fff;
     background: #0f0;
-  }
+}
 
-  .controlBtn {
-    width: 200px;
-    height: 200px;
-    font-size: 48px;   
-  }
-
-  .space {
-    width: 200px;
-    height: 200px;   
-  }
-
-  #controls {
+#controls {
     display: none;
-    grid-template-columns: 200px 200px 200px;
-    grid-gap: 15px;
-  }
+}
 
   @media (max-width: 720px) {
+    body{
+        display:flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        padding: 0;
+        height: 100%;
+    }
+
     #controls {
         display: grid;
-        grid-template-columns: 200px 200px 200px;
-        grid-gap: 15px;
-      }
+        grid-template-columns: 1fr 1fr 1fr;
+        gap: 0px;
+        margin: 0;
+        padding: 0;
+    }
+
+
     #mode {
         display: none;
     }
+    .controlBtn {
+        width: 70px;
+        height: 70px;
+        font-size: larger;   
+        border-radius: 40px;
+    }
+
+    .play__field {
+        flex-direction: column;
+        padding: 0;
+        margin: 0;
+    }
+
+    #hiscore{
+        display:none;
+    }
+
+    header {
+        width: 100%;
+        text-align: center;
+    }
+
+    button {
+        width: 100px;
+        height: 7px;
+        font-size: 5px;
+    }
+
+    #info{
+        width: 100%;
+        flex-direction: row;
+        font-size: x-small;
+    }
+
+    .message{
+        display: none;
+    }
+      
   }
