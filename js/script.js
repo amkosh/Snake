@@ -166,24 +166,24 @@ restart();  //Старт
 function controls(event){
     if(!fail){
         if(!aFlags[1] && isPause){
-            kCode(event.key);
+            kCode(event.code);
         }
-        if(event.key == ' '){
+        if(event.code == 'Space'){
             pause();
-        } else if ((isPause == true) && (event.key == 'ArrowUp' || event.key == 'ArrowLeft' || event.key == 'ArrowRight' || event.key == 'ArrowDown')) {
+        } else if ((isPause == true) && (event.code == 'ArrowUp' || event.code == 'ArrowLeft' || event.code == 'ArrowRight' || event.code == 'ArrowDown')) {
             snake.moving = true;
-            snake.move(event.key);
-        } else if ((isPause == true) && (event.key == 'w' || event.key == 'a' || event.key == 'd' || event.key == 's')) {
+            snake.move(event.code);
+        } else if ((isPause == true) && (event.code == 'KeyW' || event.code == 'KeyA' || event.code == 'KeyD' || event.code == 'KeyS')) {
             if(player2){
                 snake2.moving = true;
-                switch(event.key){
-                    case 'w': snake2.move('ArrowUp');
+                switch(event.code){
+                    case 'KeyW': snake2.move('ArrowUp');
                     break;
-                    case 'a': snake2.move('ArrowLeft');
+                    case 'KeyA': snake2.move('ArrowLeft');
                     break;
-                    case 's': snake2.move('ArrowDown');
+                    case 'KeyS': snake2.move('ArrowDown');
                     break;
-                    case 'd': snake2.move('ArrowRight');
+                    case 'KeyD': snake2.move('ArrowRight');
                     break;
                 }
             }
@@ -645,7 +645,7 @@ function kCode(key){
         aFlags[1] = true;
     }
 
-    let kCode = ['ArrowUp', 'ArrowUp', 'ArrowDown', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'ArrowLeft', 'ArrowRight', 'b', 'a'];
+    let kCode = ['ArrowUp', 'ArrowUp', 'ArrowDown', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'ArrowLeft', 'ArrowRight', 'KeyB', 'KeyA'];
     if(key == kCode[kCCheck]){
         kCCheck++;
     } else {
