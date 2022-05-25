@@ -374,6 +374,7 @@ function gameOver(player) {
         message.innerText = 'Press RESTART for another try!'
         message.className = 'message'
         cancelAnimationFrame(rAF);
+        locks = [1, 0, 0, 0, 0, 0, 0, 0, 0, 0];
     } else {
         lL = true;
         for(let i = 0; i < player.unitSize; i++){
@@ -412,7 +413,6 @@ function restart() {
         lives = 2;
         document.getElementById("lives").innerText = lives;
         portal = false;
-        locks = [1, 0, 0, 0, 0, 0, 0, 0, 0, 0];
         mapLoader();
 
         snake = new Snake('p1');
