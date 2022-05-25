@@ -2,6 +2,7 @@
 <head>
     <title>Eat Snaker</title>
     <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="css/main.css" rel="stylesheet">
     <link rel="preconnect" href="https://fonts.googleapis.com"> 
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin> 
@@ -164,6 +165,19 @@
 
     <div>
         <p class="message" id="message">MESSAGE!</p>
+    </div>
+
+    <div id="controls">
+        
+        <div class="space"></div>
+        <button onclick="snake.move('ArrowUp'), snake.moving = true" class="controlBtn">Λ</button>
+        <div class="space"></div>
+        <button onclick="snake.move('ArrowLeft'), snake.moving = true" class="controlBtn">{</button>
+        <button onclick="pause()" class="controlBtn">II</button>
+        <button onclick="snake.move('ArrowRight'), snake.moving = true" class="controlBtn">}</button>
+        <div class="space"></div>
+        <button onclick="snake.move('ArrowDown'), snake.moving = true" class="controlBtn">V</button>
+        <div class="space"></div>
     </div>
     
     <script src="js/maps.js"></script>

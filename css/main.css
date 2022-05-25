@@ -233,3 +233,31 @@ label:before {
     border: 1px solid #fff;
     background: #0f0;
   }
+
+  .controlBtn {
+    width: 200px;
+    height: 200px;
+    font-size: 48px;   
+  }
+
+  .space {
+    width: 200px;
+    height: 200px;   
+  }
+
+  #controls {
+    display: none;
+    grid-template-columns: 200px 200px 200px;
+    grid-gap: 15px;
+  }
+
+  @media (max-width: 720px) {
+    #controls {
+        display: grid;
+        grid-template-columns: 200px 200px 200px;
+        grid-gap: 15px;
+      }
+    #mode {
+        display: none;
+    }
+  }
