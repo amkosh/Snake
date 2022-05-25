@@ -129,6 +129,13 @@ button {
     outline: none;
 }
 
+.buttons {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    margin: 0% 30% 0% 30%;
+}
+
 .hidden_btn {
     display: none;
 }
@@ -201,7 +208,7 @@ button {
 .message {
     text-align: center;
     width: 100%;
-    padding: 10px;
+    padding: 10px 0px 10px 0px;
     border:dashed 1px rgb(28, 83, 97)
 }
 
