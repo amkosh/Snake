@@ -495,7 +495,7 @@ function loop() {
         snake2.count = 0;
     }
     if(bonusTimer == 0){
-        addBonusItem();
+        addBonusItem(0);
     } else {
         bonusTimer--;
     }
