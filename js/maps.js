@@ -249,7 +249,6 @@ const stageParams = {
 
 function paramsLoad(){
     goal = stageParams['stage' + stage][0];
-    //speed = stageParams['stage' + stage][1];
     borders = stageParams['stage' + stage][2];
     lvlGrow = stageParams['stage' + stage][3];
 	snake.x = stageParams['stage' + stage][4];

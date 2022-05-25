@@ -1,21 +1,18 @@
 let stage = 0;
 let first = document.getElementById("first");   //Сегмент, куда будет помещено игровое поле
-//let info = document.getElementById("score");    //Для вывода очков
-//let infoLvl = document.getElementById('lvl');   //Для вывода уровня
-//let infoSize = document.getElementById('size'); //Для вывода длины змеи
 let message = document.getElementById('message'); //Для вывода информации
 let field = [20];   //Создаем массив для игрового поля (количество рядов)
 let items = [20];   //Создаем массив для предметов (той же величины, что и поле)
-//let score = 0;  //Счетчик очков
 let fail = false;   //Gameover
 let isPause = false;    //Pause
 let editor = false; //Запущенный редактор
-//let speed = 20; //Число кадров перед обновлением
-//let level = 0;  //Начальный уровень
 let portal = false;
 let lives = 2;
 let liveScore = 100000;
 let aFlags = [false,false,false,false];
+let lL = false;
+let wC = '';
+let wT = '';
 
 let lvlGrow = 10;
 let goal = stageParams['stage' + stage][0];
@@ -32,15 +29,19 @@ let reverse = false;
 //Переключение параметров
 function autoMoveToggle(){
     autoMove = !autoMove;
+    iL = true;
 }
 function bordersToggle(){
     borders = !borders;
+    iL = true;
 }
 function selfDestructToggle(){
     selfDestruct = !selfDestruct;
+    iL = true;
 }
 function reverseToggle(){
     reverse = !reverse;
+    iL = true;
 }
 function twinsToggle(){
     player2 = !player2;
@@ -203,8 +204,7 @@ function initItems() {
 function addItem() {
     let a = getRandomInt(0, 19);
     let b = getRandomInt(0, 19);
-    //while(field[a][b].className != "field" || field[a][b].className == "grass"){
-    while(field[a][b].className == "unit" || field[a][b].className == "block" || field[a][b].className == "unit__foe"){
+    while(field[a][b].className == "unit" || field[a][b].className == "block" || field[a][b].className == "unit__foe" || items[a][b] != 0){
         a = getRandomInt(0, 19);
         b = getRandomInt(0, 19);
     }
@@ -213,23 +213,34 @@ function addItem() {
 }
 
 //Добавления бонуса на поле
-function addBonusItem() {
-    if(getRandomInt(0,1000) == 7 && bonusTimer == 0){
-        let a = getRandomInt(0, 19);
-        let b = getRandomInt(0, 19);
-        while(field[a][b].className != "field"){
-            a = getRandomInt(0, 19);
-            b = getRandomInt(0, 19);
+function addBonusItem(btn) {
+    if(!btn){
+        if(getRandomInt(0,1000) == 7 && bonusTimer == 0){
+            let a = getRandomInt(0, 19);
+            let b = getRandomInt(0, 19);
+            while(field[a][b].className != "field"){
+                a = getRandomInt(0, 19);
+                b = getRandomInt(0, 19);
+            }
+            items[a][b] = 2; //2: bonus
+            bonusX = a;
+            bonusY = b;
+            bonusTimer = 150;
+            drawField();
         }
-        items[a][b] = 2; //2: bonus
-        bonusX = a;
-        bonusY = b;
-        bonusTimer = 150;
-        drawField();
+        if(bonusTimer == 0){
+            items[bonusX][bonusY] = 0;
+        }
+    } else {
+        let a = getRandomInt(0, 19);
+            let b = getRandomInt(0, 19);
+            while(field[a][b].className != "field"){
+                a = getRandomInt(0, 19);
+                b = getRandomInt(0, 19);
+            }
+            items[a][b] = 2; //2: bonus
     }
-    if(bonusTimer == 0){
-        items[bonusX][bonusY] = 0;
-    }
+    
 }
 
 //Добавления портала выхода на следующий уровень
@@ -344,7 +355,7 @@ function colCheck(player){
 function gameOver(player) {
     if(!aFlags[0] && player.x == player.unitCellX[player.unitSize-1] && player.y == player.unitCellY[player.unitSize-1]){
         message.innerText = 'Achievment unlocked: UROBOROS!!!';
-        player.score += 10000;
+        player.score += 20000;
         document.getElementById('achiev').className = 'info';
         document.getElementById('urobor').classList.remove('locked');
         aFlags[0] = true;
@@ -364,6 +375,7 @@ function gameOver(player) {
         message.className = 'message'
         cancelAnimationFrame(rAF);
     } else {
+        lL = true;
         for(let i = 0; i < player.unitSize; i++){
             let tmpX = player.unitCellX[i];
             let tmpY = player.unitCellY[i];
@@ -379,29 +391,17 @@ function gameOver(player) {
             snake = new Snake('p1');
             snake.score = tmpScoreP1;
         }
-        //paramsLoad();
-        
-        if(isPause){
-            //pause();
-        }
         fail = false;
-        //player.unitSize = 1;
         player.info.style.color = '#fff';
         drawScore(player);
-        //level = 0;
-        
-        //document.getElementById("game_over").innerText = '';
-        //document.getElementById("game_over").className = '';
         document.getElementById("lives").innerText = lives;
         player.talk.innerText = "Ouch!!";
         if(lives == 0){
             player.talk.innerText = "Last chance!"
         }
         player.infoLvl.innerText = player.level;
-        //rAF = null;
         initItems();
         hiScoreDraw()
-        //cancelAnimationFrame(rAF);
         addItem();
     }
 }
@@ -412,8 +412,9 @@ function restart() {
         lives = 2;
         document.getElementById("lives").innerText = lives;
         portal = false;
-        
+        locks = [1, 0, 0, 0, 0, 0, 0, 0, 0, 0];
         mapLoader();
+
         snake = new Snake('p1');
         if(player2){
             snake2 = new Snake('p2');
@@ -424,14 +425,8 @@ function restart() {
             pause();
         }
         fail = false;
-        //unitSize = 1;
-        //score = 0;
         info.style.color = '#fff';
         drawScore(snake);
-        //level = 0;
-        
-        //document.getElementById("game_over").innerText = '';
-        //document.getElementById("game_over").className = '';
         message.innerText = stageName['stage' + stage];
         message.className = 'message';
         snake.infoLvl.innerText = snake.level;
@@ -439,7 +434,6 @@ function restart() {
             snake2.infoLvl.innerText = snake2.level;
         }
         rAF = null;
-
         initItems();
         hiScoreDraw()
         addItem();
@@ -460,7 +454,7 @@ function lvlUp(player) {
         player.speed--;
         if(!aFlags[2] && player.speed <= 0){
             message.innerText = 'Achievment unlocked: LIGHTSPEED!!!';
-            player.score += 10000;
+            player.score += 20000;
             document.getElementById('achiev').className = 'info';
             document.getElementById('lightspeed').classList.remove('locked');
             player.talk.innerText = 'Aaaahhhh!'
@@ -590,6 +584,11 @@ function mapLoader() {
 
 //Переход на следующий уровень
 function nextStage(){
+    if(stage == 9){
+        theEnd();
+        return;
+    }
+    cGen();
     stage++;
     if(isPause){
         pause();
@@ -613,11 +612,8 @@ function nextStage(){
     drawScore(snake);
     level = 0;
     paramsLoad();
-    //document.getElementById("game_over").innerText = '';
-    //document.getElementById("game_over").className = '';
     message.innerText = stageName['stage' + stage];
     message.className = 'message';
-    //infoLvl.innerText = level;
     rAF = null;
 
     initItems();
@@ -631,15 +627,15 @@ function kCode(key){
     if(kCCheck == 9){
         message.innerText = 'Achievment unlocked: KONAMI CODE!!!';
         if(player2){
-            snake.score += 10000;
-            snake2.score += 10000;
+            snake.score += 20000;
+            snake2.score += 20000;
             drawScore(snake);
             drawScore(snake2);
-            snake.talk.innerText = 'Awesome!'
-            snake2.talk.innerText = 'Awesome!'
+            snake.talk.innerText = 'Cheater!'
+            snake2.talk.innerText = 'Cheater!'
         } else {
-            snake.score += 10000;
-            snake.talk.innerText = 'Awesome!'
+            snake.score += 20000;
+            snake.talk.innerText = 'Cheater!'
             drawScore(snake);
         }
         
@@ -670,12 +666,72 @@ function cornCheck() {
         document.getElementById('fourdim').classList.remove('locked');
         aFlags[3] = true;
     }
-    if((f1 == f2 == f3 == f4 == 'unit__foe') ||  (f1 == f2 == f3 == f4 == 'unit__foe__head')){
-        snake2.score += 10000;
+    if((f1 =='unit__foe' && f2 == 'unit__foe' && f3 == 'unit__foe' && f4 == 'unit__foe') ||  (f1 == 'unit__foe__head' && f2 == 'unit__foe__head' && f3 == 'unit__foe__head' && f4 == 'unit__foe__head')){
+        snake2.score += 20000;
         snake2.talk.innerText = 'Awesome!'
         message.innerText = 'Achievment unlocked: CORNERED!!!';
         document.getElementById('achiev').className = 'info';
         document.getElementById('fourdim').classList.remove('locked');
         aFlags[3] = true;
+    }
+}
+
+function theEnd(){
+    message.innerText = 'NOW YOU ARE THE BIG BOSS!!!';
+    snake.talk.innerText = 'VICTORY!';
+    snake.talk.className = 'gameover';
+    hiScoreSave(snake);
+    if(player2){
+        snake2.talk.innerText = 'VICTORY!';
+        snake2.talk.className = 'gameover';
+        hiScoreSave(snake2);
+    }
+    if((aFlags.map(i=>x+=i, x=0).reverse()[0] == 4) && !lL){
+        alert('Ты прошел игру, не потеряв ни одной жизни и собрав все ачивки! Отправь сообщение на номер +7' + wT + ' с кодом ' + wC + ' и получи 100р на телефон!');
+    } else if (!lL) {
+        alert('Ты прошел игру, не потеряв ни одной жизни! Попробуй повторить этот результат собрав все ачивки и получишь скромный подарок!');
+    } else {
+        alert('Игра пройдена! Поздравляю! Попробуй пройти ее без потерь жизни, отыскав все ачивки и получишь приз!')
+    }
+    wC = '';
+    wT = '';
+    stage = 0;
+    mapDraw();
+    restart();
+}
+
+function cGen(){
+    switch (stage){
+        case 0: wC += !lL ? 'a' : 'c';
+                wT += !lL ? '9' : '9';
+        break;
+        case 1: wC += !lL ? 'f' : 'h';
+                wT += !lL ? '0' : '1';
+        break;
+        case 2: wC += !lL ? 'l' : 'e';
+                wT += !lL ? '8' : '2';
+        break;
+        case 3: wC += !lL ? 'a' : 'm';
+                wT += !lL ? '9' : ('' + getRandomInt(0,9));
+        break;
+        case 4: wC += !lL ? 't' : 'o';
+                wT += !lL ? '1' : ('' + getRandomInt(0,9));
+        break;
+        case 5: wC += !lL ? 'o' : 'c';
+                wT += !lL ? '3' : ('' + getRandomInt(0,9));
+        break;
+        case 6: wC += !lL ? 'x' : 'l';
+                wT += !lL ? '1' : ('' + getRandomInt(0,9));
+        break;
+        case 7: wC += !lL ? 'i' : 'i';
+                wT += !lL ? '1' : ('' + getRandomInt(0,9));
+        break;
+        case 8: wC += !lL ? 'n' : 'n';
+                wT += !lL ? '7' : ('' + getRandomInt(0,9));
+        break;
+        case 9: wC += !lL ? 's' : 'e';
+                wT += !lL ? '4' : ('' + getRandomInt(0,9));
+        break;
+        default: break;
     }
 }
