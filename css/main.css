@@ -251,17 +251,10 @@ input:checked + label:before {
         flex-direction: column;
         height: 100%;
     }
-
-    #controls {
-        display: grid;
-        grid-template-columns: 1fr 1fr 1fr;
-        gap: 0px;
-        margin: 0;
-        padding: 0;
-    }
-
     .buttons {
-        display: none;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 20px;
     }
 
     .controlBtn {
@@ -286,9 +279,17 @@ input:checked + label:before {
     }
 
     button {
-        width: 100px;
-        height: 7px;
-        font-size: 5px;
+        width: 1fr;
+        height: 70px;
+        font-size: small;
+    }
+
+    #mode {
+        display: none;
+    }
+
+    #editor {
+        display: none;
     }
 
     #info{
@@ -299,7 +300,11 @@ input:checked + label:before {
     }
 
     .message{
-        display: none;
+        display: flex;
+        flex-direction: row;
+        width: 100%;
+        padding: 0;
+        line-height: 100%;
     }
 
     #game_over{
