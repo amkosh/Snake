@@ -20,6 +20,9 @@ let goal = stageParams['stage' + stage][0];
 //Twin Snake
 let player2 = false;
 
+//Evil Snake
+let cpuSnake = false;
+
 //Параметры (читы)
 let autoMove = true;
 let borders = true;
@@ -493,6 +496,10 @@ function loop() {
     if(player2 && (++snake2.count > snake2.speed && autoMove && snake2.moving)){
         snake2.move(snake2.orientation[0]);
         snake2.count = 0;
+    }
+    //Движение CPU
+    if(cpu){
+        snake2.move(snake2.orientation[0]);
     }
     if(bonusTimer == 0){
         addBonusItem(0);

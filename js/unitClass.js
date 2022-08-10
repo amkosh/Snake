@@ -13,7 +13,7 @@ class Snake {
             this.talk = document.getElementById("game_over");
             this.talk.innerText = "Let's go!";
             this.speech = ['Yummy!', 'Go on!', 'More!!', 'Eeek!', 'Good!', 'Whee!!']
-        } else if (this.player == 'p2'){
+        } else if (this.player == 'p2' || this.player == 'cpu'){
             this.x = stageParams['stage' + stage][6];
             this.y = stageParams['stage' + stage][7];
             this.cName = 'unit__foe';
