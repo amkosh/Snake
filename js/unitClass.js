@@ -2,6 +2,9 @@
 class Snake {
     constructor(p) {
         this.player = p;
+        this.speed = stageParams['stage' + stage][1];; //Число кадров перед обновлением
+        this.moving = false;
+        this.orientation = [];
         if(this.player == 'p1'){
             this.x = stageParams['stage' + stage][4];
             this.y = stageParams['stage' + stage][5];
@@ -13,7 +16,8 @@ class Snake {
             this.talk = document.getElementById("game_over");
             this.talk.innerText = "Let's go!";
             this.speech = ['Yummy!', 'Go on!', 'More!!', 'Eeek!', 'Good!', 'Whee!!']
-        } else if (this.player == 'p2' || this.player == 'cpu'){
+            this.orientation.push('ArrowUp');
+        } else if (this.player == 'p2'){
             this.x = stageParams['stage' + stage][6];
             this.y = stageParams['stage' + stage][7];
             this.cName = 'unit__foe';
@@ -24,13 +28,26 @@ class Snake {
             this.talk = document.getElementById("game_overP2");
             this.talk.innerText = "SNAAAAAKE!";
             this.speech = ['Yay!', 'Nice!', 'Whoa!!', 'Ha!', 'Aye!', 'Hurrah!!']
+            this.orientation.push('ArrowUp');
+        } else if (this.player == 'cpu'){
+            this.x = stageParams['stage' + stage][6];
+            this.y = stageParams['stage' + stage][7];
+            this.cName = 'unit__foe';
+            this.cNameH = 'unit__foe__head';
+            this.info = document.getElementById("scoreP2");
+            this.infoLvl = document.getElementById('lvlP2');   //Для вывода уровня
+            this.infoSize = document.getElementById('sizeP2'); //Для вывода длины змеи
+            this.talk = document.getElementById("game_overP2");
+            this.talk.innerText = "SNAAAAAKE!";
+            this.speech = ['Yay!', 'Nice!', 'Whoa!!', 'Ha!', 'Aye!', 'Hurrah!!']
+            this.speed = 10;
+            this.moving = true;
+            //this.orientation.push(aimCPU());
         }
-        this.speed = stageParams['stage' + stage][1];; //Число кадров перед обновлением
+        
         this.level = 0;  //Начальный уровень
         this.score = 0;
         this.gotHiScore = false;
-        this.orientation = [];
-        this.orientation.push('ArrowUp');
         this.unitCellX = []; //Хранилище координат X для отображения всей длины змеи
         this.unitCellY = []; //Хранилище координат Y для отображения всей длины змеи
         this.unitCellX.push(this.x); //Добавляем первую ячейку в хранилище змеи
@@ -38,7 +55,6 @@ class Snake {
         this.unitSize = 1;
         this.field = field;
         this.count = 0;
-        this.moving = false;
     }
 
     unitReverse() {

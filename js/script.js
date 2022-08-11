@@ -22,6 +22,7 @@ let player2 = false;
 
 //Evil Snake
 let cpuSnake = false;
+let p1cpu = false;
 
 //Параметры (читы)
 let autoMove = true;
@@ -38,6 +39,12 @@ function bordersToggle(){
     borders = !borders;
     iL = true;
 }
+
+function p1cpuToggle(){
+    p1cpu = !p1cpu;
+    iL = true;
+}
+
 function selfDestructToggle(){
     selfDestruct = !selfDestruct;
     iL = true;
@@ -55,11 +62,34 @@ function twinsToggle(){
 
 function mode(){
     let button = document.getElementById('mode');
-    player2 = !player2;
-    document.getElementById('infoP2').classList.toggle('hidden');
-    document.getElementById('infoP2').classList.toggle('info');
+    if(!player2 && !cpuSnake){
+        player2 = true;
+        document.getElementById('infoP2').classList.toggle('hidden');
+        document.getElementById('infoP2').classList.toggle('info');
+    } else if (player2){
+        player2 = false;
+        cpuSnake = true;
+        let css = document.querySelector("link");
+        css.href = "css/mainCPU.css";
+        let cpuInfo = document.getElementById("infoP2");
+        cpuInfo.querySelector("p").innerText = "CPU";
+        
+    } else {
+        cpuSnake = false;
+        player2 = false;
+        document.getElementById('infoP2').classList.toggle('hidden');
+        document.getElementById('infoP2').classList.toggle('info');
+        let css = document.querySelector("link");
+        css.href = "css/main.css";
+        let cpuInfo = document.getElementById("infoP2");
+        cpuInfo.querySelector("p").innerText = "Player 2";
+    }
+    
+
     if(button.innerText == 'SOLO'){
         button.innerText = 'TEAM';
+    } else if (button.innerText == 'TEAM'){
+        button.innerText = 'CPU';
     } else {
         button.innerText = 'SOLO';
     }
@@ -135,6 +165,9 @@ function drawScore(player) {
         if(player2){
             snake2.infoSize.innerText = goal - (snake.unitSize + snake2.unitSize - 2);
             snake.infoSize.innerText = goal - (snake.unitSize + snake2.unitSize - 2);
+        } else if(cpuSnake){
+            cpu.infoSize.innerText = goal - (snake.unitSize + cpu.unitSize - 2);
+            snake.infoSize.innerText = goal - (snake.unitSize + cpu.unitSize - 2);
         } else {
             player.infoSize.innerText = goal - (snake.unitSize-1);
         }
@@ -143,8 +176,7 @@ function drawScore(player) {
 
 // следим за кадрами анимации, чтобы если что — остановить игру
 let rAF = null;
-//Счетчик кадров
-//let count = 0;
+
 //Таймер бонуса
 let bonusTimer = 0;
 let bonusX = 0;
@@ -191,6 +223,159 @@ function controls(event){
                 }
             }
         }
+    }
+}
+
+//Определение направления автозмеи
+function aimCPU(){
+    var x;
+    var y;
+    var direction;
+    //Определяем местонахождение объекта
+    for(let i = 0; i < 20; i++) {
+        for(let j = 0; j < 20; j++){
+            if((items[i][j] != 0)){
+                x = j;
+                y = i;
+            }
+        }
+    }
+
+    if(x > cpu.unitCellY[0] && cpu.orientation[0] != 'ArrowLeft'){
+        direction = 'ArrowRight';
+    } else if (x < cpu.unitCellY[0] && cpu.orientation[0] != 'ArrowRight'){
+        direction = 'ArrowLeft';
+    } else {
+        if(y > cpu.unitCellX[0] && cpu.orientation[0] != 'ArrowUp'){
+            direction = 'ArrowDown';
+        } else if (y < cpu.unitCellX[0] && cpu.orientation[0] != 'ArrowDown'){
+            direction = 'ArrowUp';
+        } else {
+            direction = 'ArrowDown';
+        }
+    }
+
+    return direction;
+}
+
+//Управление автозмеей
+function cpuControls(ai){
+    var x;
+    var y;
+    var direction = aimCPU();
+    
+
+    if(!cpuColCheck(direction, ai.x, ai.y) && !deepColCheckCpu([ai.x, ai.y], 15)){
+        ai.move(direction);
+    } else {
+        if(!cpuColCheck("ArrowUp", ai.x, ai.y)){
+            ai.move("ArrowUp");
+        } else if (!cpuColCheck("ArrowDown", ai.x, ai.y)){
+            ai.move("ArrowDown");
+        } else if (!cpuColCheck("ArrowRight", ai.x, ai.y)){
+            ai.move("ArrowRight");
+        } else {
+            if(ai.orientation[0] == "ArrowRight"){
+                ai.move("ArrowUp");
+            } else {
+                ai.move("ArrowLeft");
+            }
+        }
+    }
+    cleanCheck();   
+}
+
+//Проверка столкновений CPU
+function cpuColCheck(direction, x, y){
+
+    switch(direction){
+        case 'ArrowUp': --x;
+        break;
+        case 'ArrowDown': ++x;
+        break;
+        case 'ArrowRight': ++y;
+        break;
+        case 'ArrowLeft': --y;
+        break;
+        default: return;
+    }
+
+    //Проверка на стены
+    if((x < 0 || x > 19 || y < 0 || y > 19) && borders) {
+        return true;
+    }
+
+    //Проверка на себя
+    if ((field[x][y].className == "unit" || field[x][y].className == "unit__head") && selfDestruct) {
+        return true;
+    }
+
+    //Проверка на checked
+    if (field[x][y].hasAttribute("check")) {
+        return true;
+    }
+
+    //Проверка на второго игрока
+    else if ((field[x][y].className == "unit__foe" || field[x][y].className == "unit__foe__head") && selfDestruct) {
+        return true;
+    }
+
+    //Проверка на блоки
+    else if (field[x][y].className == "block") {
+        return true;
+    } else {
+        return false;
+    }
+}
+
+
+
+//Глубокая проверка столкновений CPU
+function deepColCheckCpu(xy, level){
+    let directs = ["ArrowUp", "ArrowRight", "ArrowDown", "ArrowLeft"];
+    let tmpX = xy[0];
+    let tmpY = xy[1];
+    field[tmpX][tmpY].setAttribute("check", "checked");
+
+    if(level == 0){
+        return false;
+    } else {
+        
+        if(!cpuColCheck(directs[0], tmpX, tmpY) && field[tmpX][tmpY].hasAttribute("check")){
+            xy = coordinates(directs[0], tmpX, tmpY);
+            return deepColCheckCpu(xy, --level);
+        } else if(!cpuColCheck(directs[1], tmpX, tmpY) && field[tmpX][tmpY].hasAttribute("check")){
+            xy = coordinates(directs[1], tmpX, tmpY);
+            return deepColCheckCpu(xy, --level);
+        } else if(!cpuColCheck(directs[2], tmpX, tmpY) && field[tmpX][tmpY].hasAttribute("check")){
+            xy = coordinates(directs[2], tmpX, tmpY);
+            return deepColCheckCpu(xy, --level);
+        } else if(!cpuColCheck(directs[3], tmpX, tmpY) && field[tmpX][tmpY].hasAttribute("check")){
+            xy = coordinates(directs[3], tmpX, tmpY);
+            return deepColCheckCpu(xy, --level);
+        } else {
+            return true;
+        }
+    }
+}
+
+//Очистка полей от checked
+function cleanCheck(){
+    for(let i = 0; i < 20; i++) {
+        for(let j = 0; j < 20; j++){
+            field[i][j].removeAttribute("check");
+        }
+    }
+}
+
+//Определение позиции после перемещения
+function coordinates(direction, x, y){
+    switch(direction){
+        case 'ArrowUp': return [--x, y];
+        case 'ArrowDown': return [++x, y];
+        case 'ArrowRight': return [x, ++y];
+        case 'ArrowLeft': return [x, --y];
+        default: return;
     }
 }
 
@@ -292,6 +477,9 @@ function drawField(){
         if(player2){
             snake2.initUnit();
         }
+        if(cpuSnake){
+            cpu.initUnit();
+        }
     }
     if(!aFlags[3]){
         cornCheck();
@@ -353,7 +541,6 @@ function colCheck(player){
     }
 }
 
-
 //Остановка игры при проигрыше
 function gameOver(player) {
     if(!aFlags[0] && player.x == player.unitCellX[player.unitSize-1] && player.y == player.unitCellY[player.unitSize-1]){
@@ -363,12 +550,13 @@ function gameOver(player) {
         document.getElementById('urobor').classList.remove('locked');
         aFlags[0] = true;
     }
-    lives--;
+    if (player.player != 'cpu') lives--;
     if(lives < 0){
         hiScoreSave(player);
         for(let i = 0; i < player.unitSize; i++){
             let tmpX = player.unitCellX[i];
             let tmpY = player.unitCellY[i];
+            console.log(field[tmpX][tmpY].className);
             field[tmpX][tmpY].className = "dead";
         }
         fail = true;
@@ -390,6 +578,10 @@ function gameOver(player) {
             let tmpScoreP2 = snake2.score;
             snake2 = new Snake('p2');
             snake2.score = tmpScoreP2;
+        } else if(player.player == 'cpu'){
+            let tmpScoreCPU = cpu.score;
+            cpu = new Snake('cpu');
+            cpu.score = tmpScoreCPU;
         } else {
             let tmpScoreP1 = snake.score;
             snake = new Snake('p1');
@@ -419,23 +611,36 @@ function restart() {
         mapLoader();
 
         snake = new Snake('p1');
+
         if(player2){
             snake2 = new Snake('p2');
         }
+
+        if(cpuSnake){
+            cpu = new Snake('cpu');
+        }
+
         paramsLoad();
         mapDraw();
+
         if(isPause){
             pause();
         }
+
         fail = false;
         info.style.color = '#fff';
         drawScore(snake);
         message.innerText = stageName['stage' + stage];
         message.className = 'message';
         snake.infoLvl.innerText = snake.level;
+
         if(player2){
             snake2.infoLvl.innerText = snake2.level;
         }
+        if(cpuSnake){
+            snake2.infoLvl.innerText = cpu.level;
+        }
+        
         rAF = null;
         initItems();
         hiScoreDraw()
@@ -449,6 +654,8 @@ function lvlUp(player) {
     let sum = 0;
     if(player2){
         sum = (snake.unitSize + snake2.unitSize) - 2;
+    } else if(cpuSnake){
+        sum = (snake.unitSize + cpu.unitSize) - 2;
     } else {
         sum = snake.unitSize;
     }
@@ -470,6 +677,7 @@ function lvlUp(player) {
         player.talk.innerText = 'STAGE COMPLETE!';
         message.innerText = 'Go to the portal!'
         message.className = 'message';
+
         if(!portal){
             addPortal();
             portal = true;
@@ -490,17 +698,24 @@ function loop() {
     rAF = requestAnimationFrame(loop);
     if (++snake.count > snake.speed && autoMove && snake.moving) {
 		//Движение змеи
-        snake.move(snake.orientation[0]);
-        snake.count = 0; 
+        if(!p1cpu){
+            snake.move(snake.orientation[0]);
+            snake.count = 0; 
+        } else {
+            snake.moving = true;
+            cpuControls(snake);
+        }
     }
+
     if(player2 && (++snake2.count > snake2.speed && autoMove && snake2.moving)){
         snake2.move(snake2.orientation[0]);
         snake2.count = 0;
     }
     //Движение CPU
-    if(cpu){
-        snake2.move(snake2.orientation[0]);
+    if(cpuSnake && (++cpu.count > cpu.speed && autoMove && cpu.moving)){
+        cpuControls(cpu);
     }
+    
     if(bonusTimer == 0){
         addBonusItem(0);
     } else {
@@ -607,6 +822,12 @@ function nextStage(){
         let tmpScoreP2 = snake2.score;
         snake2 = new Snake('p2');
         snake2.score = tmpScoreP2;
+    }
+
+    if(cpu){
+        let tmpScoreCPU = cpu.score;
+        cpu = new Snake('cpu');
+        snake2.score = tmpScoreCPU;
     }
     
     portal = false;

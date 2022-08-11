@@ -1,0 +1,321 @@
+#first {
+    display: grid;
+    grid-template-columns:repeat(20, 20fr);
+}
+
+header {
+    padding: 0px 0px 0px 25px;
+}
+
+
+body {
+    background: rgb(0, 23, 36);
+    color: #fff;
+    user-select: none;
+    font-family: 'Press Start 2P', cursive;
+    line-height: 50%;
+}
+
+.locked {
+    color: rgb(0, 23, 36);
+}
+
+.block {
+    background-color: #555;
+    border: solid 1px #555;
+    width: 20px;
+    height: 20px;
+}
+
+.grass {
+    background-color: #0a0;
+    width: 20px;
+    height: 20px;
+    border: dashed 1px #0a0;
+}
+
+.grass_edit {
+    background-color: #0a0;
+    width: 20px;
+    height: 20px;
+    border: dashed 1px rgb(143, 217, 252);
+}
+
+.editor {
+    background-color: rgb(0, 120, 189);
+    border: dashed 1px rgb(143, 217, 252);
+    width: 20px;
+    height: 20px;
+}
+
+.block_edit {
+    background-color: rgb(255, 255, 255);
+    border: dashed 1px rgb(143, 217, 252);
+    width: 20px;
+    height: 20px;
+}
+
+.item {
+    background-color: #f00;
+    transition: background-color 0.2s ease-in;
+    animation: itemColor  1s alternate infinite ease-out;
+    border-radius: 5px;
+}
+
+.bonus__item {
+    background-color: rgb(0, 140, 255);
+    transition: background-color 0.1s ease-in;
+    animation: itemBonus  0.3s alternate infinite ease-out;
+    border-radius: 15px;
+}
+
+.unit {
+    background-color: #0a0;
+    width: 20px;
+    height: 20px;
+    border: dashed 1px #0a0;
+    border-radius: 3px;
+}
+
+.unit__head {
+    background-color: #0f0;
+    width: 20px;
+    height: 20px;
+    border: solid 1px #0f0;
+    border-radius: 3px;
+}
+
+.unit__foe {
+    background-color: rgb(250, 200, 0);
+    width: 20px;
+    height: 20px;
+    border: dashed 1px rgb(250, 170, 0);
+    border-radius: 3px;
+}
+
+.unit__foe__head {
+    background-color: rgb(139, 0, 86);
+    width: 20px;
+    height: 20px;
+    border: solid 1px rgb(130, 100, 80);
+    border-radius: 3px;
+}
+
+.field {
+    background-color: rgb(0,0,0);
+    transition: background-color 0.2s ease-in;
+    width: 20px;
+    height: 20px;
+    border: dashed rgb(28, 83, 97) 1px;
+}
+
+.play__field {
+    display: flex;
+    flex-direction: row;
+    justify-content:space-between;
+}
+
+.dead {
+    background-color: rgb(110, 44, 0);
+    width: 20px;
+    height: 20px;
+    border: solid 1px rgb(110, 44, 0);
+}
+
+button {
+    margin: 10px 10px 10px 0px;
+    padding: 7px;
+    width: 100px;
+    background-color: rgb(28, 83, 97);
+    color: #fff;
+    border: none;
+    cursor: pointer;
+    font-family: 'Press Start 2P', cursive;
+    font-size: 10px;
+    outline: none;
+}
+
+.buttons {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    margin: 0% 30% 0% 30%;
+}
+
+.hidden_btn {
+    display: none;
+}
+
+.hidden {
+    display: none;
+}
+
+.info {
+    padding: 15px;
+    display: flex;
+    flex-direction: column;
+    width: 200px;
+    border: dashed rgb(28, 83, 97) 1px;
+    background-color: rgb(0, 14, 22);
+}
+
+.portal {
+    background-color: rgb(90, 0, 99);
+    transition: background-color 0.1s ease-in;
+    animation: itemPortal  0.3s alternate infinite ease-out;
+}
+
+@keyframes itemColor {
+    from {background-color: #f00;}
+    to {background-color: #ff9900;}
+}
+
+@keyframes itemBonus {
+    from {background-color: rgb(0, 217, 255);}
+    to {background-color: #ffffff;}
+}
+
+@keyframes itemPortal {
+    0% {background-color: rgb(102, 0, 88);}
+    77% {background-color: #960069;}
+    100% {background-color: #fff;}
+}
+
+.params {
+    padding: 15px;
+    display: flex;
+    flex-direction: column;
+    width: 200px;
+    border: dashed rgb(28, 83, 97) 1px;
+    background-color: rgb(0, 14, 22);
+}
+
+.params div{
+    font-size: 10px;
+}
+
+#hiscore {
+    padding: 15px;
+    display: flex;
+    flex-direction: column;
+    width: 100px;
+    border: dashed rgb(28, 83, 97) 1px;
+    background-color: rgb(0, 14, 22);
+    font-size: 10px;
+    line-height: 20px;
+}
+
+.gameover {
+    padding: 7px;
+    text-align: center;
+    border: solid red 2px;
+}
+
+.message {
+    text-align: center;
+    width: 100%;
+    padding: 10px 0px 10px 0px;
+    border:dashed 1px rgb(28, 83, 97)
+}
+
+input[type="checkbox"] {
+    display: none;
+}
+
+label {
+    display: flex;
+    justify-content: flex-start;
+    color: #fff;
+    cursor: pointer;
+    line-height: 20px;
+    padding: 5px 0;
+}
+
+label:before {
+    content: " ";
+    display: inline-block;
+    width: 15px;
+    height: 15px;
+    background: #000;
+    border: 1px dashed rgb(28, 83, 97);
+    border-radius: 5px;
+    margin: 0px 10px 0px 0px;
+}
+
+input:checked + label:before {
+    border: 1px solid #fff;
+    background: #0f0;
+}
+
+#controls {
+    display: none;
+}
+
+  @media (max-width: 720px) {
+    body{
+        display:flex;
+        flex-direction: column;
+        height: 100%;
+        overscroll-behavior: contain;
+    }
+    .buttons {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 20px;
+    }
+
+    .controlBtn {
+        width: 100%;
+        height: 100%;
+        font-size: medium;   
+        border-radius: 40px;
+    }
+
+    .play__field {
+        flex-direction: column;
+        margin: 0;
+    }
+
+    #hiscore{
+        display:none;
+    }
+
+    header {
+        width: 100%;
+        text-align: center;
+    }
+
+    button {
+        width: 1fr;
+        height: 70px;
+        font-size: small;
+    }
+
+    #mode {
+        display: none;
+    }
+
+    #editor {
+        display: none;
+    }
+
+    #info{
+        width: 100%;
+        flex-direction: row;
+        justify-content: space-around;
+        font-size: x-small;
+    }
+
+    .message{
+        display: flex;
+        flex-direction: row;
+        width: 100%;
+        padding: 0;
+        line-height: 100%;
+    }
+
+    #game_over{
+        display: none;
+    }
+      
+  }
