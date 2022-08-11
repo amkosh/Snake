@@ -241,6 +241,10 @@ input:checked + label:before {
     background: #0f0;
 }
 
+#vsCPU {
+    display: none;
+}
+
 #controls {
     display: none;
 }
@@ -285,7 +289,13 @@ input:checked + label:before {
         font-size: small;
     }
 
-    
+    #mode {
+        display: none;
+    }
+
+    #vsCPU {
+        display: inline;
+    }
 
     #editor {
         display: none;

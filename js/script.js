@@ -96,6 +96,11 @@ function mode(){
     restart();
 }
 
+function vsCPU(){
+    cpuSnake = !cpuSnake;
+    restart();
+}
+
 //Таблица рекордов
 let hiScore = [100000, 90000, 80000, 70000, 60000, 50000, 40000, 30000, 20000, 10000];
 
@@ -638,7 +643,7 @@ function restart() {
             snake2.infoLvl.innerText = snake2.level;
         }
         if(cpuSnake){
-            snake2.infoLvl.innerText = cpu.level;
+            cpu.infoLvl.innerText = cpu.level;
         }
         
         rAF = null;
