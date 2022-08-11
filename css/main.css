@@ -254,7 +254,7 @@ input:checked + label:before {
     }
     .buttons {
         display: grid;
-        grid-template-columns: 1fr 1fr;
+        grid-template-columns: 1fr 1fr 1fr;
         gap: 20px;
     }
 
@@ -285,9 +285,7 @@ input:checked + label:before {
         font-size: small;
     }
 
-    #mode {
-        display: none;
-    }
+    
 
     #editor {
         display: none;
@@ -298,6 +296,10 @@ input:checked + label:before {
         flex-direction: row;
         justify-content: space-around;
         font-size: x-small;
+    }
+
+    #infoP2{
+        display: none;
     }
 
     .message{
