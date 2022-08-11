@@ -38,9 +38,9 @@ class Snake {
             this.infoLvl = document.getElementById('lvlP2');   //Для вывода уровня
             this.infoSize = document.getElementById('sizeP2'); //Для вывода длины змеи
             this.talk = document.getElementById("game_overP2");
-            this.talk.innerText = "SNAAAAAKE!";
-            this.speech = ['Yay!', 'Nice!', 'Whoa!!', 'Ha!', 'Aye!', 'Hurrah!!']
-            this.speed = 10;
+            this.talk.innerText = "0110 1010";
+            this.speech = ['$SCAS!', '#MOVZX', 'int 0x21', 'mov ax', '0xDFF32', 'WBINVD!!']
+            this.speed = stageParams['stage' + stage][1];
             this.moving = true;
             //this.orientation.push(aimCPU());
         }
